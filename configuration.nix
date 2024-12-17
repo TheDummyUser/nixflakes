@@ -40,6 +40,13 @@
     "flakes"
   ];
 
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
 
@@ -131,6 +138,9 @@
     eza
     go
     zed-editor
+    nixd
+    kitty
+    waybar
   ];
 
   fonts.packages = with pkgs; [
@@ -145,6 +155,20 @@
     fira-code-symbols
     ubuntu_font_family
   ];
+
+    programs.hyprland =
+    { # we use this instead of putting it in systemPackages/users
+      enable = true;
+      xwayland.enable = true;
+    };
+
+  environment.sessionVariables.NIXOS_OZONE_WL =
+    "1"; # This variable fixes electron apps
+  # hardware.opengl = {
+  #   enable = true;
+  #   driSupport = true;
+  #   driSupport32Bit = true;
+  # };
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
