@@ -74,9 +74,9 @@
       # https://wiki.hyprland.org/Configuring/Variables/#general
       general {
           gaps_in = 5
-          gaps_out = 20
+          gaps_out = 10
 
-          border_size = 2
+          border_size = 3
 
           # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
           col.active_border = rgb(${base09}) rgb(${base08}) 45deg
@@ -93,7 +93,7 @@
 
       # https://wiki.hyprland.org/Configuring/Variables/#decoration
       decoration {
-          rounding = 10
+          rounding = 0
 
           # Change transparency of focused and unfocused windows
           active_opacity = 1.0
