@@ -9,45 +9,54 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    ...
-  }: {
-    nixosConfigurations = let
-      user = "gabbar";
-    in {
-      # update with `nix flake update`
-      # rebuild with `nixos-rebuild switch --flake .#dev`
-      default = nixpkgs.lib.nixosSystem rec {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit (nixpkgs) lib;
-          inherit inputs nixpkgs system user;
-        };
-        modules = [
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              backupFileExtension = "backup";
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.${user} = {
-                imports = [./home.nix];
-                home = {
-                  username = user;
-                  homeDirectory = "/home/${user}";
-                  # do not change this value
-                  stateVersion = "24.11";
-                };
-                # Let Home Manager install and manage itself.
-                programs.home-manager.enable = true;
-              };
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      ...
+    }:
+    {
+      nixosConfigurations =
+        let
+          user = "gabbar";
+        in
+        {
+          # update with `nix flake update`
+          # rebuild with `nixos-rebuild switch --flake .#dev`
+          default = nixpkgs.lib.nixosSystem rec {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit (nixpkgs) lib;
+              inherit
+                inputs
+                nixpkgs
+                system
+                user
+                ;
             };
-          }
-          ./configuration.nix
-        ];
-      };
+            modules = [
+              inputs.home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  backupFileExtension = "backup";
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  users.${user} = {
+                    imports = [ ./home.nix ];
+                    home = {
+                      username = user;
+                      homeDirectory = "/home/${user}";
+                      # do not change this value
+                      stateVersion = "24.11";
+                    };
+                    # Let Home Manager install and manage itself.
+                    programs.home-manager.enable = true;
+                  };
+                };
+              }
+              ./configuration.nix
+            ];
+          };
+        };
     };
-  };
 }
