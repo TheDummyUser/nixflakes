@@ -8,5 +8,7 @@
   imports = [
     ./zsh
     ./git
+    ./hyprland
+    ./kitty
   ];
 }
