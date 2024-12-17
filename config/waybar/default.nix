@@ -3,7 +3,8 @@
 {
   programs.waybar = {
     enable = true;
-    settings = with config.colorScheme.palette; {
+    package = pkgs.waybar;
+    settings = {
       mainBar = {
         layer = "top";
         position = "top";
@@ -97,8 +98,8 @@
             }
 
             #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio {
-            background-color: #${base00};
-            color: #${base06};
+            background-color: #${config.colorScheme.palette.base00};
+            color: #${config.colorScheme.palette.base06};
             border-radius: 5px;
             padding-left: 10px;
             padding-right: 10px;
@@ -117,13 +118,13 @@
             padding: 0px 5px
             }
             #workspaces button {
-            background-color: #${base00};
-            color: #${base03};
+            background-color: #${config.colorScheme.palette.base00};
+            color: #${config.colorScheme.palette.base03};
             }
 
             #workspaces button.active {
-            background: #${base00};
-            color: #${base05};
+            background: #${config.colorScheme.palette.base00};
+            color: #${config.colorScheme.palette.base05};
             }
 
     '';

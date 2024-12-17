@@ -152,14 +152,26 @@
     ubuntu_font_family
   ];
 
-    programs.hyprland =
-    { # we use this instead of putting it in systemPackages/users
-      enable = true;
-      xwayland.enable = true;
-    };
+  programs.hyprland = {
+    # we use this instead of putting it in systemPackages/users
+    enable = true;
+    xwayland.enable = true;
+  };
 
-  environment.sessionVariables.NIXOS_OZONE_WL =
-    "1"; # This variable fixes electron apps
+  # nixpkgs = {
+  #   overlays = [
+  #     (self: super: {
+  #       waybar = super.waybar.overrideAttrs (oldAttrs: {
+  #         mesonFlags = oldAttrs.mesonFlags ++ [
+  #           "-Dexperimental=true"
+  #           "-Dmpd=enabled"
+  #         ];
+  #       });
+  #     })
+  #   ];
+  # };
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1"; # This variable fixes electron apps
   # hardware.opengl = {
   #   enable = true;
   #   driSupport = true;
