@@ -10,6 +10,6 @@
     ./git
     ./hyprland
     ./kitty
-    # ./waybar
+    ./waybar
   ];
 }
