@@ -1,5 +1,12 @@
-{config, lib, pkgs, ...}: {
-    imports = [
-        ./zsh
-    ];
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  imports = [
+    ./zsh
+    ./git
+  ];
 }
