@@ -127,6 +127,10 @@
     git
     fastfetch
     nixfmt-rfc-style
+    thefuck
+    eza
+    go
+    zed-editor
   ];
 
   fonts.packages = with pkgs; [
