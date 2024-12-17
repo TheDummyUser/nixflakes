@@ -5,6 +5,17 @@
   ...
 }:
 {
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+  programs.eza = {
+    enable = true;
+    colors = "always";
+    icons = "always";
+    enableZshIntegration = true;
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -12,7 +23,8 @@
     syntaxHighlighting.enable = true;
     shellAliases = {
       ll = "ls -l";
-      update = "cd ~/nixflakes && sudo nixos-rebuild switch --flake .#default &&cd ~/";
+      update = "cd ~/nixflakes && sudo nixos-rebuild switch --flake .#default && cd ~/";
+      del = "sudo nix-collect-garbage -d && update";
     };
     oh-my-zsh = {
       enable = true;
@@ -20,6 +32,7 @@
         "git"
         "thefuck"
         "eza"
+        "fzf"
       ];
       theme = "gentoo";
     };
