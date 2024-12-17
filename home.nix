@@ -1,12 +1,16 @@
 {
+  lib,
+  config,
   inputs,
   pkgs,
   ...
 }:
 {
-    programs.git = {
+  programs.git = {
     enable = true;
-    userName  = "TheDummyUser";
+    userName = "TheDummyUser";
     userEmail = "abhiram.reddy122002@gmail.com";
   };
+
+  imports = [./config];
 }

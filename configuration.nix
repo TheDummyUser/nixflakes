@@ -5,10 +5,10 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -29,13 +29,16 @@
 
   #file system
   boot.supportedFilesystems = [ "ntfs" ];
-  fileSystems."/mnt/Localdisk" =
-    { device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-      fsType = "ntfs-3g";
-    };
+  fileSystems."/mnt/Localdisk" = {
+    device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+    fsType = "ntfs-3g";
+  };
 
-#flakes
- nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  #flakes
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
@@ -89,20 +92,26 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.defaultUserShell = pkgs.zsh;
+  environment.shells = with pkgs; [ zsh ];
+  programs.zsh.enable = true;
   users.users.gabbar = {
+    shell = pkgs.zsh;
     isNormalUser = true;
     description = "gabbar";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
+      zsh
       kdePackages.kate
-    #  thunderbird
+      #  thunderbird
     ];
   };
 
   # Install firefox.
   programs.firefox.enable = true;
-	
-
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -110,18 +119,23 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     curl
     vscode
     discord
     git
     fastfetch
+    nixfmt-rfc-style
   ];
 
   fonts.packages = with pkgs; [
     (nerdfonts.override {
-      fonts = [ "FiraCode" "DroidSansMono" "JetBrainsMono" ];
+      fonts = [
+        "FiraCode"
+        "DroidSansMono"
+        "JetBrainsMono"
+      ];
     })
     jetbrains-mono
     fira-code-symbols
