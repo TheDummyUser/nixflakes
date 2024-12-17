@@ -1,6 +1,7 @@
 {
   description = "My nix config";
   inputs = {
+    nix-colors.url = "github:misterio77/nix-colors";
     # change to github:nixos/nixpkgs/nixos-unstable for unstable
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager = {
@@ -10,11 +11,7 @@
     };
   };
   outputs =
-    inputs@{
-      self,
-      nixpkgs,
-      ...
-    }:
+    inputs@{ self, nixpkgs, ... }:
     {
       nixosConfigurations =
         let
@@ -25,6 +22,7 @@
           # rebuild with `nixos-rebuild switch --flake .#dev`
           default = nixpkgs.lib.nixosSystem rec {
             system = "x86_64-linux";
+
             specialArgs = {
               inherit (nixpkgs) lib;
               inherit
@@ -34,6 +32,7 @@
                 user
                 ;
             };
+
             modules = [
               inputs.home-manager.nixosModules.home-manager
               {
@@ -41,8 +40,12 @@
                   backupFileExtension = "backup";
                   useGlobalPkgs = true;
                   useUserPackages = true;
+                  extraSpecialArgs = { inherit inputs system user; };
                   users.${user} = {
-                    imports = [ ./home.nix ];
+                    imports = [
+                      inputs.nix-colors.homeManagerModule
+                      ./home.nix
+                    ];
                     home = {
                       username = user;
                       homeDirectory = "/home/${user}";
