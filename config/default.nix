@@ -10,5 +10,6 @@
     ./git
     ./hyprland
     ./kitty
+    # ./waybar
   ];
 }
