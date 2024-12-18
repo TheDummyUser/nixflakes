@@ -11,8 +11,11 @@
   ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.devices = [ "nodev" ];
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.useOSProber = true; # set to false if you only have NixOS installed or just remove the line
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -28,11 +31,11 @@
   time.timeZone = "Asia/Kolkata";
 
   #file system
-  boot.supportedFilesystems = [ "ntfs" ];
-  fileSystems."/mnt/Localdisk" = {
-    device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-    fsType = "ntfs-3g";
-  };
+  # boot.supportedFilesystems = [ "ntfs" ];
+  # fileSystems."/mnt/Localdisk" = {
+  #   device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+  #   fsType = "ntfs-3g";
+  # };
 
   #flakes
   nix.settings.experimental-features = [
@@ -55,41 +58,14 @@
     LC_TIME = "en_IN";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.defaultUserShell = pkgs.zsh;
@@ -103,15 +79,8 @@
       "networkmanager"
       "wheel"
     ];
-    packages = with pkgs; [
-      zsh
-      kdePackages.kate
-      #  thunderbird
-    ];
+    packages = with pkgs; [ ];
   };
-
-  # Install firefox.
-  programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -121,6 +90,7 @@
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
+    firefox
     curl
     discord
     git
@@ -143,26 +113,22 @@
     gopls
   ];
 
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+  environment.sessionVariables.NIXOS_OZONE_WL = 1;
+
   fonts.packages = with pkgs; [
     (nerdfonts.override {
       fonts = [
         "FiraCode"
-        "DroidSansMono"
         "JetBrainsMono"
       ];
     })
+    fira-code
     jetbrains-mono
-    fira-code-symbols
-    ubuntu_font_family
   ];
-
-  programs.hyprland = {
-    # we use this instead of putting it in systemPackages/users
-    enable = true;
-    xwayland.enable = true;
-  };
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1"; # This variable fixes electron apps
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

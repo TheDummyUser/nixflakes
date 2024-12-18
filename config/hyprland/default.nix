@@ -49,7 +49,7 @@
             # Autostart necessary processes (like notifications daemons, status bars, etc.)
             # Or execute your favorite apps at launch like this:
 
-              exec-once = swww init && swww img /mnt/Localdisk/folder/wall/wallhaven-kxyxym_7680x3244.png
+            #  exec-once = swww init && swww img /mnt/Localdisk/folder/wall/wallhaven-kxyxym_7680x3244.png
             # exec-once = $terminal
             exec-once = nm-applet &
             # exec-once = waybar & hyprpaper & firefox

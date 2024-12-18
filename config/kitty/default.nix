@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.kitty = {
@@ -27,8 +32,7 @@
       window_alert_on_bell = "no";
       detect_url = "yes";
       url_style = "curly";
-      url_prefixes =
-        "file ftp ftps gemini git gopher http https irc ircs kitty mailto news sftp ssh";
+      url_prefixes = "file ftp ftps gemini git gopher http https irc ircs kitty mailto news sftp ssh";
       show_hyperlink_targets = "yes";
       underline_hyperlinks = "hover";
       confirm_os_window_close = 0;
