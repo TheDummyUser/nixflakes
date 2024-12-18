@@ -95,7 +95,6 @@
     discord
     git
     fastfetch
-    nixfmt-rfc-style
     thefuck
     eza
     go
@@ -111,6 +110,10 @@
     dunst
     cava
     gopls
+    vlc
+    ani-cli
+    lazygit
+    btop
   ];
 
   programs.hyprland = {
