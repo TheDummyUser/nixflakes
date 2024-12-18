@@ -122,7 +122,6 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     curl
-    vscode
     discord
     git
     fastfetch
@@ -131,12 +130,16 @@
     eza
     go
     nixd
+    zed-editor
     kitty
     waybar
     rofi
     bottles
     swww
     networkmanagerapplet
+    hyprshot
+    dunst
+    cava
   ];
 
   fonts.packages = with pkgs; [
@@ -158,25 +161,9 @@
     xwayland.enable = true;
   };
 
-  # nixpkgs = {
-  #   overlays = [
-  #     (self: super: {
-  #       waybar = super.waybar.overrideAttrs (oldAttrs: {
-  #         mesonFlags = oldAttrs.mesonFlags ++ [
-  #           "-Dexperimental=true"
-  #           "-Dmpd=enabled"
-  #         ];
-  #       });
-  #     })
-  #   ];
-  # };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1"; # This variable fixes electron apps
-  # hardware.opengl = {
-  #   enable = true;
-  #   driSupport = true;
-  #   driSupport32Bit = true;
-  # };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
