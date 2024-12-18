@@ -16,10 +16,10 @@
   # gtk need to add custom files
   gtk = {
     enable = true;
-    font = {
-      name = "JetBrainsMono Nerd Font";
-      size = 9;
-    };
+    # font = {
+    #   name = "JetBrainsMono Nerd Font";
+    #   size = 9;
+    # };
     theme = {
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
