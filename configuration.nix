@@ -100,6 +100,8 @@
     go
     nixd
     zed-editor
+    pcmanfm
+    yazi
     kitty
     waybar
     rofi
