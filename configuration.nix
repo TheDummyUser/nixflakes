@@ -140,6 +140,7 @@
     hyprshot
     dunst
     cava
+    gopls
   ];
 
   fonts.packages = with pkgs; [
@@ -160,7 +161,6 @@
     enable = true;
     xwayland.enable = true;
   };
-
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1"; # This variable fixes electron apps
 
