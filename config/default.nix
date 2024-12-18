@@ -11,5 +11,6 @@
     ./hyprland
     ./kitty
     ./waybar
+    ./spicetify
   ];
 }

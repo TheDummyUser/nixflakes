@@ -9,6 +9,10 @@
       url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     inputs@{ self, nixpkgs, ... }:
@@ -43,6 +47,7 @@
                   extraSpecialArgs = { inherit inputs system user; };
                   users.${user} = {
                     imports = [
+                      inputs.spicetify-nix.homeManagerModules.default
                       inputs.nix-colors.homeManagerModule
                       ./home.nix
                     ];
