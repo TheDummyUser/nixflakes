@@ -38,7 +38,7 @@
 
             # Set programs that you use
             $terminal = kitty
-            $fileManager = dolphin
+            $fileManager = pcmanfm
             $menu = rofi -show drun
 
 
