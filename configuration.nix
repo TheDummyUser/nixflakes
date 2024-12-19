@@ -117,7 +117,7 @@
     ani-cli
     lazygit
     btop
-    # direnv
+    direnv
   ];
 
   programs.hyprland = {

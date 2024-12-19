@@ -13,5 +13,6 @@
     ./waybar
     ./spicetify
     ./rofi
+    ./zathura
   ];
 }
