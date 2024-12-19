@@ -14,7 +14,7 @@
       bold_font = "auto";
       italic_font = "auto";
       bold_italic_font = "auto";
-      font_size = 10;
+      font_size = 11;
 
       #pages
       "ctrl+shift+up" = "scroll_line_up";

@@ -31,11 +31,11 @@
   time.timeZone = "Asia/Kolkata";
 
   #file system
-  # boot.supportedFilesystems = [ "ntfs" ];
-  # fileSystems."/mnt/Localdisk" = {
-  #   device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-  #   fsType = "ntfs-3g";
-  # };
+  boot.supportedFilesystems = [ "ntfs" ];
+  fileSystems."/mnt/Localdisk" = {
+    device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+    fsType = "ntfs-3g";
+  };
 
   #flakes
   nix.settings.experimental-features = [
@@ -57,6 +57,7 @@
     LC_TELEPHONE = "en_IN";
     LC_TIME = "en_IN";
   };
+  programs.kdeconnect.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -116,6 +117,7 @@
     ani-cli
     lazygit
     btop
+    # direnv
   ];
 
   programs.hyprland = {
