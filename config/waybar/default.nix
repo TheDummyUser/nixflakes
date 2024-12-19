@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.waybar = {
@@ -8,11 +13,15 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 30;
-        margin-left = 5;
+        height = 33;
         modules-left = [ "clock" ];
         modules-center = [ "hyprland/workspaces" ];
-        modules-right = [ "pulseaudio" "tray" "bluetooth" "network" ];
+        modules-right = [
+          "pulseaudio"
+          "tray"
+          "bluetooth"
+          "network"
+        ];
 
         "clock" = {
           "intervel" = 60;
@@ -35,15 +44,14 @@
         };
 
         "tray" = {
-          "icon-size" = 12;
-          "spacing" = 5;
+          "icon-size" = 13;
+          "spacing" = 6;
         };
 
         "bluetooth" = {
           "format" = " {status}";
           "format-connected" = " {device_alias}";
-          "format-connected-battery" =
-            " {device_alias} {device_battery_percentage}%";
+          "format-connected-battery" = " {device_alias} {device_battery_percentage}%";
           "format-device-preference" = [
             "device1"
             "device2"
@@ -58,14 +66,16 @@
             {num_connections} connected
 
             {device_enumerate}'';
-          "tooltip-format-enumerate-connected" =
-            "{device_alias}	{device_address}";
+          "tooltip-format-enumerate-connected" = "{device_alias}	{device_address}";
           "tooltip-format-enumerate-connected-battery" =
             "{device_alias}	{device_address}	{device_battery_percentage}%";
         };
 
         "network" = {
-          "interface" = [ "enp2s0" "wlp0s20f0u5" ];
+          "interface" = [
+            "enp2s0"
+            "wlp0s20f0u5"
+          ];
           "format" = "{ifname}";
           "format-wifi" = "󰤨 {essid}";
           "format-ethernet" = "{ifname}";
@@ -77,8 +87,17 @@
           "format-muted" = "󰝟";
           "tooltip" = false;
           "format-icons" = {
-            "headphone" = "";
-            "default" = [ "" "" "󰕾" "󰕾" "󰕾" "" "" "" ];
+            "headphone" = " ";
+            "default" = [
+              ""
+              ""
+              "󰕾"
+              "󰕾"
+              "󰕾"
+              " "
+              " "
+              " "
+            ];
           };
         };
       };
@@ -89,22 +108,27 @@
               font-family:'FiraCode Nerd Font', 'Symbols Nerd Font Mono' ;
               font-size: 13px;
               font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
-              min-height: 30px;
+              min-height: 35px;
             }
 
 
             window#waybar {
-             background: transparent;
+             background: #${config.colorScheme.palette.base00};
             }
 
             #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio {
-            background-color: #${config.colorScheme.palette.base00};
-            color: #${config.colorScheme.palette.base06};
+            background-color: #${config.colorScheme.palette.base02};
+            color: #${config.colorScheme.palette.base07};
             border-radius: 5px;
             padding-left: 10px;
             padding-right: 10px;
-            margin-top:5px;
+            margin-top: 8px;
             margin-right: 5px;
+            margin-bottom: 8px;
+            }
+
+            #clock {
+            margin-left: 5px;
             }
 
             #tray,#bluetooth,#pulseaudio {
@@ -112,19 +136,19 @@
             }
 
             #tray {
-            font-size:12px;
+            font-size:16px;
             }
             #workspaces {
-            padding: 0px 5px
+            padding: 0px 0px
             }
             #workspaces button {
-            background-color: #${config.colorScheme.palette.base00};
+            background-color: #${config.colorScheme.palette.base02};
             color: #${config.colorScheme.palette.base03};
             }
 
             #workspaces button.active {
-            background: #${config.colorScheme.palette.base00};
-            color: #${config.colorScheme.palette.base05};
+            background: #${config.colorScheme.palette.base01};
+            color: #${config.colorScheme.palette.base08};
             }
 
     '';

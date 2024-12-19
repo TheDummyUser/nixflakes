@@ -100,6 +100,7 @@
     eza
     go
     nixd
+    nixfmt-rfc-style
     zed-editor
     pcmanfm
     yazi
