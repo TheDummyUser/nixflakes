@@ -14,5 +14,7 @@
     ./spicetify
     ./rofi
     ./zathura
+    ./foot
+    ./dunst
   ];
 }
