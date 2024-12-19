@@ -25,6 +25,7 @@
       ll = "ls -l";
       update = "cd ~/nixflakes && sudo nixos-rebuild switch --flake .#default && cd ~/";
       del = "sudo nix-collect-garbage -d && update";
+      zed = "zeditor";
     };
     oh-my-zsh = {
       enable = true;
@@ -33,6 +34,7 @@
         "thefuck"
         "eza"
         "fzf"
+        "direnv"
       ];
       theme = "gentoo";
     };
