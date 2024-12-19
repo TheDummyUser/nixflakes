@@ -12,5 +12,6 @@
     ./kitty
     ./waybar
     ./spicetify
+    ./rofi
   ];
 }
