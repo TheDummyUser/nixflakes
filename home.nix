@@ -11,15 +11,15 @@
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.ayu-dark;
+  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-material-dark-hard;
 
   # gtk need to add custom files
   gtk = {
     enable = true;
-    # font = {
-    #   name = "JetBrainsMono Nerd Font";
-    #   size = 9;
-    # };
+    font = {
+      name = "JetBrainsMono Nerd Font";
+      size = 10;
+    };
     theme = {
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
@@ -50,7 +50,6 @@
     gtk.enable = true;
     x11.enable = true;
   };
-
 
   # dir env
   programs.direnv = {
