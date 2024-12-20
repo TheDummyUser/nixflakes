@@ -39,7 +39,7 @@
       # Set programs that you use
       $terminal = foot
       $fileManager = pcmanfm
-      $menu = rofi -show drun
+      $menu = wofi --show drun
 
 
       #################
@@ -51,7 +51,8 @@
       # exec-once = $terminal
       exec-once = nm-applet &
       # exec-once = waybar & hyprpaper & firefox
-      exec-once = swww init & swww img /mnt/Localdisk/folder/wall/wallhaven-kxyxym_7680x3244.png
+      exec-once = swww init
+      exec-once = ~/nixflakes/randomImagePicker/main
       exec-once = waybar & dunst &
       exec-once = foot --server & discord
 
@@ -226,6 +227,7 @@
       bind = $mainMod, P, pseudo, # dwindle
       bind = $mainMod, J, togglesplit, # dwindle
       bind = $mainMod, PRINT, exec, hyprshot -m window
+      bind = $mainMod, SPACE, exec, ~/nixflakes/randomImagePicker/main
       # Screenshot a monitor
       bind = , PRINT, exec, hyprshot -m output
 

@@ -107,7 +107,10 @@
     yazi
     kitty
     waybar
+    eww
+    nil
     rofi
+    wofi
     bottles
     swww
     networkmanagerapplet
@@ -120,6 +123,8 @@
     lazygit
     btop
     direnv
+    ags
+    bun
   ];
 
   programs.hyprland = {

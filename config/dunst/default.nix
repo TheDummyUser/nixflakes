@@ -46,20 +46,20 @@
 
         timeout = 3;
 
-        frame-color = "#${config.colorScheme.colors.base05}";
+        frame-color = "#${config.colorScheme.palette.base05}";
 
-        separator-color = "#${config.colorScheme.colors.base05}";
+        separator-color = "#${config.colorScheme.palette.base05}";
       };
 
       urgency-normal = {
-        foreground = "#${config.colorScheme.colors.base05}";
-        background = "#${config.colorScheme.colors.base02}";
+        foreground = "#${config.colorScheme.palette.base05}";
+        background = "#${config.colorScheme.palette.base02}";
 
       };
 
       urgency-critical = {
-        foreground = "#${config.colorScheme.colors.base06}";
-        background = "#${config.colorScheme.colors.base08}";
+        foreground = "#${config.colorScheme.palette.base06}";
+        background = "#${config.colorScheme.palette.base08}";
       };
     };
   };

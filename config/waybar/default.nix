@@ -108,27 +108,22 @@
               font-family:'FiraCode Nerd Font', 'Symbols Nerd Font Mono' ;
               font-size: 13px;
               font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
-              min-height: 35px;
+              min-height: 30px;
             }
 
 
             window#waybar {
-             background: #${config.colorScheme.palette.base00};
+             background: transparent;
             }
 
             #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio {
-            background-color: #${config.colorScheme.palette.base02};
-            color: #${config.colorScheme.palette.base07};
+            background-color: #${config.colorScheme.colors.base00};
+            color: #${config.colorScheme.colors.base06};
             border-radius: 5px;
             padding-left: 10px;
             padding-right: 10px;
-            margin-top: 8px;
+            margin-top:5px;
             margin-right: 5px;
-            margin-bottom: 8px;
-            }
-
-            #clock {
-            margin-left: 5px;
             }
 
             #tray,#bluetooth,#pulseaudio {
@@ -136,21 +131,20 @@
             }
 
             #tray {
-            font-size:16px;
+            font-size:12px;
             }
             #workspaces {
-            padding: 0px 0px
+            padding: 0px 5px
             }
             #workspaces button {
-            background-color: #${config.colorScheme.palette.base02};
-            color: #${config.colorScheme.palette.base03};
+            background-color: #${config.colorScheme.colors.base00};
+            color: #${config.colorScheme.colors.base03};
             }
 
             #workspaces button.active {
-            background: #${config.colorScheme.palette.base01};
-            color: #${config.colorScheme.palette.base08};
+            background: #${config.colorScheme.colors.base00};
+            color: #${config.colorScheme.colors.base05};
             }
-
     '';
 
   };
