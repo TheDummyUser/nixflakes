@@ -1,7 +1,5 @@
 {
   config,
-  lib,
-  pkgs,
   ...
 }:
 
@@ -19,12 +17,12 @@
         ];
         modules-center = [ "clock" ];
         modules-right = [
-          "idle_"
+          "idle_inhibitor"
           "pulseaudio"
-          "tray"
           "bluetooth"
           "network"
-          "idle_inhibitor"
+          "tray"
+          "custom/exit"
         ];
 
         "clock" = {
@@ -50,16 +48,24 @@
           max-length = 22;
           separate-outputs = false;
           rewrite = {
-            "" = "  No Windows? ";
+            "" = "  No Windows?";
           };
+        };
+
+        "custom/exit" = {
+          tooltip = false;
+          format = "";
+          on-click = "sleep 0.1 && wlogout";
         };
 
         "idle_inhibitor" = {
           "format" = "{icon}";
           "format-icons" = {
-            "activated" = " ";
-            "deactivated" = " ";
+            "activated" = "";
+            "deactivated" = "";
           };
+          "exec" = "$HOME/nixflakes/scripts/swayidle-start.sh";
+          "on-click" = "$HOME/nixflakes/scripts/swayidle-start.sh";
         };
         "tray" = {
           "icon-size" = 12;
@@ -90,15 +96,17 @@
         };
 
         "network" = {
-          "interface" = [
-            "enp2s0"
-            "wlp0s20f0u5"
+          format-icons = [
+            "󰤯 "
+            "󰤟 "
+            "󰤢 "
+            "󰤥 "
+            "󰤨 "
           ];
-          "format" = "{ifname}";
-          "format-wifi" = "󰤨 {essid}";
-          "format-ethernet" = "{ifname}";
-          "format-disconnected" = "󰤭 No Network";
-          "tooltip" = false;
+          format-ethernet = " {bandwidthDownOctets}";
+          format-wifi = "{icon} {signalStrength}%";
+          format-disconnected = "󰤮";
+          tooltip = false;
         };
         "pulseaudio" = {
           "format" = " {icon} {volume}%";
@@ -134,9 +142,9 @@
              background: transparent;
             }
 
-            #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor {
-            background-color: #${config.colorScheme.colors.base00};
-            color: #${config.colorScheme.colors.base06};
+            #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit {
+            background-color: #${config.colorScheme.palette.base00};
+            color: #${config.colorScheme.palette.base06};
             border-radius: 5px;
             padding-left: 10px;
             padding-right: 10px;
@@ -157,16 +165,14 @@
             margin-left: 5px;
             }
             #workspaces button {
-            background-color: #${config.colorScheme.colors.base00};
-            color: #${config.colorScheme.colors.base03};
+            background-color: #${config.colorScheme.palette.base00};
+            color: #${config.colorScheme.palette.base03};
             }
 
             #workspaces button.active {
-            background: #${config.colorScheme.colors.base00};
-            color: #${config.colorScheme.colors.base05};
+            background: #${config.colorScheme.palette.base00};
+            color: #${config.colorScheme.palette.base05};
             }
-
     '';
-
   };
 }

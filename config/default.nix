@@ -1,7 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
   ...
 }:
 {
@@ -16,5 +13,8 @@
     ./zathura
     ./foot
     ./dunst
+    ./swaylock
+    ./wlogout
+    ./fastfetch
   ];
 }

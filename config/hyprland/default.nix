@@ -1,7 +1,5 @@
 {
   config,
-  lib,
-  pkgs,
   ...
 }:
 
@@ -55,7 +53,7 @@
       exec-once = ~/nixflakes/randomImagePicker/main
       exec-once = waybar & dunst &
       exec-once = foot --server & discord
-
+      # exec-once = bash ~/nixflakes/scripts/swayidle-start.sh
 
       #############################
       ### ENVIRONMENT VARIABLES ###
