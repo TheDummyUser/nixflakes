@@ -11,7 +11,7 @@
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-material-dark-hard;
+  colorScheme = inputs.nix-colors.colorSchemes.ayu-dark;
 
   # gtk need to add custom files
   gtk = {
@@ -52,10 +52,10 @@
   };
 
   # dir env
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-    enableZshIntegration = true;
-    enableBashIntegration = true;
-  };
+  #programs.direnv = {
+  #enable = true;
+  # nix-direnv.enable = true;
+  # enableZshIntegration = true;
+  # enableBashIntegration = true;
+  #};
 }

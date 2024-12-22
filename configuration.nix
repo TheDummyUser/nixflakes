@@ -9,6 +9,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./config/sddm
+    ./config/nix
   ];
 
   # Bootloader.
@@ -38,12 +39,6 @@
     fsType = "ntfs-3g";
   };
 
-  #flakes
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
 
@@ -69,6 +64,17 @@
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
 
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  services.blueman.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
@@ -92,7 +98,7 @@
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    firefox
+    floorp
     curl
     discord
     git
@@ -103,14 +109,11 @@
     nixd
     nixfmt-rfc-style
     zed-editor
-    pcmanfm
+    nautilus
     yazi
     kitty
     waybar
-    eww
-    nil
     rofi
-    wofi
     bottles
     swww
     networkmanagerapplet
@@ -123,9 +126,13 @@
     lazygit
     btop
     direnv
-    ags
-    bun
+    devenv
+    swayidle
+    swaylock
   ];
+
+  # pam services
+  security.pam.services.swaylock = { };
 
   programs.hyprland = {
     enable = true;
@@ -133,15 +140,20 @@
   };
   environment.sessionVariables.NIXOS_OZONE_WL = 1;
 
-  fonts.packages = with pkgs; [
-    (nerdfonts.override {
-      fonts = [
-        "FiraCode"
-        "JetBrainsMono"
-      ];
-    })
-    fira-code
-    jetbrains-mono
+  # fonts.packages = with pkgs; [
+  #   (nerdfonts.override {
+  #     fonts = [
+  #       "FiraCode"
+  #       "JetBrainsMono"
+  #     ];
+  #   })
+  #   fira-code
+  #   jetbrains-mono
+  # ];
+  fonts.packages = [
+    # pkgs.nerd-fonts._0xproto
+    pkgs.nerd-fonts.fira-code
+    pkgs.nerd-fonts.jetbrains-mono
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
