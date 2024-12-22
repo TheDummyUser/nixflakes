@@ -1,21 +1,22 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 let
   image = pkgs.fetchurl {
     url = "https://w.wallhaven.cc/full/ln/wallhaven-lnkxq0.jpg";
     sha256 = "sha256-hQ0cBkFDlGLws/Hnbdx4fuRqMXgPCgJ5glNTRhVsRhk=";
   };
-in {
+in
+{
   home.file.".config/rofi/themes/theme.rasi".text = ''
-    * {
-      main-bg:            #${config.colorScheme.palette.base00}ff;
-      main-fg:            #${config.colorScheme.palette.base07}ff;
-      main-br:            #${config.colorScheme.palette.base02}ff;
-      main-ex:            #${config.colorScheme.palette.base04}ff;
-      select-bg:          #${config.colorScheme.palette.base01}ff;
-      select-fg:          #${config.colorScheme.palette.base08}ff;
-      separatorcolor:     transparent;
-      border-color:       #${config.colorScheme.palette.base00}ff;
-  }
+      * {
+        main-bg:            #${config.colorScheme.palette.base00}ff;
+        main-fg:            #${config.colorScheme.palette.base07}ff;
+        main-br:            #${config.colorScheme.palette.base02}ff;
+        main-ex:            #${config.colorScheme.palette.base04}ff;
+        select-bg:          #${config.colorScheme.palette.base01}ff;
+        select-fg:          #${config.colorScheme.palette.base08}ff;
+        separatorcolor:     transparent;
+        border-color:       #${config.colorScheme.palette.base00}ff;
+    }
   '';
 
   home.file.".config/rofi/config.rasi".text = ''
