@@ -38,8 +38,8 @@
 
       # Set programs that you use
       $terminal = foot
-      $fileManager = pcmanfm
-      $menu = wofi --show drun
+      $fileManager = nautilus
+      $menu = rofi -show drun
 
 
       #################
@@ -49,7 +49,7 @@
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
       # Or execute your favorite apps at launch like this:
       # exec-once = $terminal
-      exec-once = nm-applet &
+      exec-once = nm-applet & blueman-applet
       # exec-once = waybar & hyprpaper & firefox
       exec-once = swww init
       exec-once = ~/nixflakes/randomImagePicker/main
@@ -76,7 +76,7 @@
       # https://wiki.hyprland.org/Configuring/Variables/#general
       general {
           gaps_in = 5
-          gaps_out = 10
+          gaps_out = 5
 
           border_size = 3
 

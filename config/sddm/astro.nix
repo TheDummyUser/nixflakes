@@ -1,10 +1,11 @@
 { pkgs }:
 let
   image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/6d/wallhaven-6dgyvq.jpg";
-    sha256 = "sha256-1aszGgqK2hqDRkgOIkmozxlEi5yZgLXToDA4cKSvleI=";
+    url = "https://w.wallhaven.cc/full/5g/wallhaven-5gele3.png";
+    sha256 = "sha256-WbY27LnqDVWHDx+pfWx94uJaN4PPQ3+LRNr4gfY82cI=";
   };
-in pkgs.stdenv.mkDerivation {
+in
+pkgs.stdenv.mkDerivation {
   name = "sddm-theme";
   src = pkgs.fetchFromGitHub {
     owner = "Keyitdev";

@@ -8,19 +8,23 @@
 {
   programs.waybar = {
     enable = true;
-    package = pkgs.waybar;
     settings = {
       mainBar = {
         layer = "top";
         position = "top";
-        height = 33;
-        modules-left = [ "clock" ];
-        modules-center = [ "hyprland/workspaces" ];
+        height = 30;
+        modules-left = [
+          "hyprland/workspaces"
+          "hyprland/window"
+        ];
+        modules-center = [ "clock" ];
         modules-right = [
+          "idle_"
           "pulseaudio"
           "tray"
           "bluetooth"
           "network"
+          "idle_inhibitor"
         ];
 
         "clock" = {
@@ -38,14 +42,28 @@
             "active" = " 󰮯 ";
             "default" = " 󰊠 ";
           };
-          #"persistent-workspaces" = {
-          #  "*" = 9; # 5 workspaces by default on every monitor
-          # };
+          on-scroll-up = "hyprctl dispatch workspace e+1";
+          on-scroll-down = "hyprctl dispatch workspace e-1";
         };
 
+        "hyprland/window" = {
+          max-length = 22;
+          separate-outputs = false;
+          rewrite = {
+            "" = "  No Windows? ";
+          };
+        };
+
+        "idle_inhibitor" = {
+          "format" = "{icon}";
+          "format-icons" = {
+            "activated" = " ";
+            "deactivated" = " ";
+          };
+        };
         "tray" = {
-          "icon-size" = 13;
-          "spacing" = 6;
+          "icon-size" = 12;
+          "spacing" = 5;
         };
 
         "bluetooth" = {
@@ -87,16 +105,16 @@
           "format-muted" = "󰝟";
           "tooltip" = false;
           "format-icons" = {
-            "headphone" = " ";
+            "headphone" = "";
             "default" = [
               ""
               ""
               "󰕾"
               "󰕾"
               "󰕾"
-              " "
-              " "
-              " "
+              ""
+              ""
+              ""
             ];
           };
         };
@@ -116,7 +134,7 @@
              background: transparent;
             }
 
-            #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio {
+            #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor {
             background-color: #${config.colorScheme.colors.base00};
             color: #${config.colorScheme.colors.base06};
             border-radius: 5px;
@@ -133,8 +151,10 @@
             #tray {
             font-size:12px;
             }
+
             #workspaces {
-            padding: 0px 5px
+            padding: 0px 0px;
+            margin-left: 5px;
             }
             #workspaces button {
             background-color: #${config.colorScheme.colors.base00};
@@ -145,6 +165,7 @@
             background: #${config.colorScheme.colors.base00};
             color: #${config.colorScheme.colors.base05};
             }
+
     '';
 
   };
