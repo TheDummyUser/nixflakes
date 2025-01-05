@@ -17,7 +17,8 @@
   boot.loader.grub.enable = true;
   boot.loader.grub.devices = [ "nodev" ];
   boot.loader.grub.efiSupport = true;
-  boot.loader.grub.useOSProber = true; # set to false if you only have NixOS installed or just remove the line
+  boot.loader.grub.useOSProber =
+    false; # set to false if you only have NixOS installed or just remove the line
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -66,13 +67,17 @@
 
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    remotePlay.openFirewall =
+      true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall =
+      true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall =
+      true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
-  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  hardware.bluetooth.powerOnBoot =
+    true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -83,10 +88,7 @@
     shell = pkgs.zsh;
     isNormalUser = true;
     description = "gabbar";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
+    extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [ ];
   };
 
@@ -129,6 +131,13 @@
     devenv
     swayidle
     swaylock
+    helix
+    nil
+    gotools
+    delve
+    golangci-lint-langserver
+    golangci-lint
+    python312Packages.python-lsp-server
   ];
 
   # pam services

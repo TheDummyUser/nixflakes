@@ -16,5 +16,6 @@
     ./swaylock
     ./wlogout
     ./fastfetch
+    ./helix
   ];
 }
