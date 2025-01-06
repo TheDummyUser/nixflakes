@@ -88,7 +88,7 @@
     shell = pkgs.zsh;
     isNormalUser = true;
     description = "gabbar";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "kvm" ];
     packages = with pkgs; [ ];
   };
 
@@ -100,23 +100,25 @@
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    floorp
     curl
-    discord
+    vesktop
     git
     fastfetch
     thefuck
     eza
     go
     nixd
+    tmux
+    copyq
     nixfmt-rfc-style
     zed-editor
     nautilus
     yazi
+    obsidian
     kitty
     waybar
     rofi
-    bottles
+    firefox
     swww
     networkmanagerapplet
     hyprshot

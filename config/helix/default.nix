@@ -12,6 +12,7 @@
         true-color = true;
         bufferline = "multiple";
         auto-pairs = true;
+        popup-border = "all";
 
         statusline = {
           left = [ "mode" "spinner" "file-name" ];
@@ -83,6 +84,43 @@
         name = "go";
         auto-format = true;
         formatter.command = "goimports";
+      }
+
+      {
+        name = "javascript";
+        auto-format = true;
+        language-servers =
+          [ "typescript-language-server" "vscode-eslint-language-server" ];
+      }
+
+      {
+        name = "typescript";
+        auto-format = true;
+        language-servers =
+          [ "typescript-language-server" "vscode-eslint-language-server" ];
+      }
+      {
+        name = "html";
+        auto-format = true;
+        language-servers = [ "vscode-html-language-server" "tailwindcss-ls" ];
+      }
+
+      {
+        name = "css";
+        auto-format = true;
+        language-servers = [ "vscode-html-language-server" "tailwindcss-ls" ];
+      }
+
+      {
+        name = "jsx";
+        auto-format = true;
+        language-servers = [ "vscode-html-language-server" "tailwindcss-ls" ];
+      }
+
+      {
+        name = "tsx";
+        auto-format = true;
+        language-servers = [ "vscode-html-language-server" "tailwindcss-ls" ];
       }
     ];
   };

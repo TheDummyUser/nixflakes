@@ -88,7 +88,7 @@
         }
         {
           type = "command";
-          key = "│  ";
+          key = "│ 󰮭 ";
           text = # bash
             ''
               birth_install=$(stat -c %W /)
