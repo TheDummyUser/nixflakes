@@ -1,7 +1,11 @@
-{ inputs, pkgs, ... }: {
-  imports = [ ./config inputs.nix-colors.homeManagerModules.default ];
+{ inputs, pkgs, ... }:
+{
+  imports = [
+    ./config
+    inputs.nix-colors.homeManagerModules.default
+  ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.oxocarbon-dark;
+  colorScheme = inputs.nix-colors.colorSchemes.ayu-mirage;
 
   # gtk need to add custom files
   gtk = {

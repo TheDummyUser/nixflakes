@@ -13,7 +13,6 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
   };
   outputs =
     inputs@{ self, nixpkgs, ... }:
@@ -50,7 +49,6 @@
                     imports = [
                       inputs.spicetify-nix.homeManagerModules.default
                       inputs.nix-colors.homeManagerModule
-                      inputs.nix-doom-emacs.hmModule
                       ./home.nix
                     ];
                     home = {
