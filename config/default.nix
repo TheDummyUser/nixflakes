@@ -1,6 +1,4 @@
-{
-  ...
-}:
+{ ... }:
 {
   imports = [
     ./zsh
@@ -16,6 +14,5 @@
     ./swaylock
     ./wlogout
     ./fastfetch
-    ./helix
   ];
 }
