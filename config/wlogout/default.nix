@@ -35,7 +35,7 @@
       }
       {
         "label" = "lock";
-        "action" = "sleep 1; swaylock";
+        "action" = "sleep 1; hyprlock";
         "text" = "Lock";
         "keybind" = "l";
       }

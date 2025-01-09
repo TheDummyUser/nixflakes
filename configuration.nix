@@ -132,14 +132,27 @@
     direnv
     devenv
     swayidle
-    swaylock
-    helix
+    # swaylock
+    hyprlock
     nil
-    emacsPackages.vterm
+    multimarkdown
+    shellcheck
+    gthumb
+    ripgrep
+    gotools
+    nodePackages_latest.js-beautify
+    gotests
+    fd
+    vscode-langservers-extracted
+    nginx-language-server
   ];
 
   # pam services
-  security.pam.services.swaylock = { };
+  # security.pam.services.swaylock = { };
+  security = {
+    polkit.enable = true;
+    pam.services.hyprlock = { };
+  };
 
   programs.hyprland = {
     enable = true;

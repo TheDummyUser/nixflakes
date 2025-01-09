@@ -11,7 +11,8 @@
     ./zathura
     ./foot
     ./dunst
-    ./swaylock
+    # ./swaylock
+    ./hyprlock
     ./wlogout
     ./fastfetch
   ];
