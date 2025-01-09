@@ -225,6 +225,7 @@
         bind = $mainMod, SPACE, exec, ~/nixflakes/randomImagePicker/main
         # Screenshot a monitor
         bind = , PRINT, exec, hyprshot -m output
+        bind = $mainMod, L, exec, hyprlock
 
 
 
