@@ -74,7 +74,7 @@
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
-
+  services.gvfs.enable = true;
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
@@ -104,8 +104,11 @@
     git
     fastfetch
     thefuck
+    zellij
     eza
     go
+    nitch
+    httpie-desktop
     nixd
     tmux
     copyq
@@ -136,6 +139,7 @@
     hyprlock
     nil
     multimarkdown
+    lavat
     shellcheck
     gthumb
     ripgrep
@@ -143,8 +147,6 @@
     nodePackages_latest.js-beautify
     gotests
     fd
-    vscode-langservers-extracted
-    nginx-language-server
   ];
 
   # pam services

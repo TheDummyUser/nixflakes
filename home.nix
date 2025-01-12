@@ -5,7 +5,7 @@
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.tokyo-night-dark;
+  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-dark-hard;
 
   # gtk need to add custom files
   gtk = {
@@ -30,7 +30,7 @@
   };
   qt = {
     enable = true;
-    platformTheme.name = "gtk";
+    platformTheme.name = "kde";
     style = {
       name = "adwaita-dark";
       package = pkgs.adwaita-qt;
