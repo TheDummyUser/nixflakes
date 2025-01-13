@@ -19,7 +19,7 @@
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.useOSProber = false; # set to false if you only have NixOS installed or just remove the line
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "interstellar"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -28,7 +28,14 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-
+  networking.stevenblack = {
+    enable = true;
+    block = [
+      "fakenews"
+      "gambling"
+      "porn"
+    ];
+  };
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
 
