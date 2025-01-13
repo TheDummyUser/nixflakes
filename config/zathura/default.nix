@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   programs.zathura = {
     enable = true;
     options = {
@@ -20,7 +21,7 @@
       recolor-reverse-video = "false";
 
       default-bg = "#${config.colorScheme.palette.base00}";
-      default-fg = "#${config.colorScheme.palette.base01}";
+      default-fg = "#${config.colorScheme.palette.base05}";
 
       statusbar-fg = "#${config.colorScheme.palette.base04}";
       statusbar-bg = "#${config.colorScheme.palette.base02}";

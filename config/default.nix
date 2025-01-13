@@ -15,5 +15,6 @@
     ./hyprlock
     ./wlogout
     ./fastfetch
+    ./zellij
   ];
 }

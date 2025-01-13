@@ -3,6 +3,7 @@
 {
   wayland.windowManager.hyprland = {
     enable = true;
+    xwayland.enable = true;
     # systemdIntegration = true;
     extraConfig = with config.colorScheme.palette; ''
             # This is an example Hyprland config file.
