@@ -17,7 +17,7 @@
   boot.loader.grub.enable = true;
   boot.loader.grub.devices = [ "nodev" ];
   boot.loader.grub.efiSupport = true;
-  boot.loader.grub.useOSProber = false; # set to false if you only have NixOS installed or just remove the line
+  boot.loader.grub.useOSProber = true; # set to false if you only have NixOS installed or just remove the line
 
   networking.hostName = "interstellar"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
