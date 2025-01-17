@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  sddmTheme = import ./astro.nix { inherit pkgs; };
+  sddmTheme = import ./corners.nix { inherit pkgs; };
 in
 {
   services = {

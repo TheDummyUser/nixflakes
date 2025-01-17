@@ -16,5 +16,6 @@
     ./wlogout
     ./fastfetch
     ./zellij
+    ./nvf
   ];
 }

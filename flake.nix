@@ -13,6 +13,7 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nvf.url = "github:notashelf/nvf";
   };
   outputs =
     inputs@{ self, nixpkgs, ... }:
@@ -49,6 +50,7 @@
                     imports = [
                       inputs.spicetify-nix.homeManagerModules.default
                       inputs.nix-colors.homeManagerModule
+                      inputs.nvf.homeManagerModules.default
                       ./home.nix
                     ];
                     home = {
