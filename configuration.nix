@@ -110,6 +110,7 @@
     (discord.override {
       withVencord = true;
     })
+    ispell
     git
     fastfetch
     thefuck
