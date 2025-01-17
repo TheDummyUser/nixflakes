@@ -10,7 +10,7 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 30;
+        height = 20;
         modules-left = [
           "hyprland/workspaces"
           "hyprland/window"
@@ -22,7 +22,6 @@
           "bluetooth"
           "network"
           "tray"
-          "custom/exit"
         ];
 
         "clock" = {
@@ -45,24 +44,17 @@
         };
 
         "hyprland/window" = {
-          max-length = 22;
+          # max-length = 22;
           separate-outputs = false;
           rewrite = {
             "" = "  No Windows?";
           };
         };
-
-        "custom/exit" = {
-          tooltip = false;
-          format = "";
-          on-click = "sleep 0.1 && wlogout";
-        };
-
         "idle_inhibitor" = {
           "format" = "{icon}";
           "format-icons" = {
-            "activated" = "";
-            "deactivated" = "";
+            "activated" = "  ";
+            "deactivated" = "  ";
           };
           "exec" = "$HOME/nixflakes/scripts/swayidle-start.sh";
           "on-click" = "$HOME/nixflakes/scripts/swayidle-start.sh";
@@ -104,12 +96,12 @@
             "󰤨 "
           ];
           format-ethernet = " {bandwidthDownOctets}";
-          format-wifi = "{icon} {signalStrength}%";
+          format-wifi = "{icon}{signalStrength}%";
           format-disconnected = "󰤮";
           tooltip = false;
         };
         "pulseaudio" = {
-          "format" = " {icon} {volume}%";
+          "format" = "{icon} {volume}%";
           "format-muted" = "󰝟";
           "tooltip" = false;
           "format-icons" = {
@@ -134,22 +126,23 @@
               font-family:'FiraCode Nerd Font', 'Symbols Nerd Font Mono' ;
               font-size: 13px;
               font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
-              min-height: 30px;
+              min-height: 20px;
             }
 
 
             window#waybar {
-             background: transparent;
+             background: #${config.colorScheme.palette.base00};
             }
 
             #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit {
-            background-color: #${config.colorScheme.palette.base00};
+            background-color: #${config.colorScheme.palette.base01};
             color: #${config.colorScheme.palette.base06};
-            border-radius: 5px;
-            padding-left: 10px;
-            padding-right: 10px;
+            border-radius: 0px;
+            padding-left: 5px;
+            padding-right: 5px;
             margin-top:5px;
             margin-right: 5px;
+            margin-bottom: 5px;
             }
 
             #tray,#bluetooth,#pulseaudio {
@@ -157,7 +150,7 @@
             }
 
             #tray {
-            font-size:12px;
+            font-size:13px;
             }
 
             #workspaces {
@@ -165,12 +158,13 @@
             margin-left: 5px;
             }
             #workspaces button {
-            background-color: #${config.colorScheme.palette.base00};
+            background-color: #${config.colorScheme.palette.base01};
             color: #${config.colorScheme.palette.base03};
             }
 
             #workspaces button.active {
-            background: #${config.colorScheme.palette.base00};
+            border-radius: 0px;
+            background: #${config.colorScheme.palette.base02};
             color: #${config.colorScheme.palette.base05};
             }
     '';
