@@ -133,6 +133,7 @@
     networkmanagerapplet
     hyprshot
     dunst
+    nix-init
     cava
     gopls
     vlc
