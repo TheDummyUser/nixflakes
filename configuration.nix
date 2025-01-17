@@ -107,7 +107,9 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     curl
-    vesktop
+    (discord.override {
+      withVencord = true;
+    })
     git
     fastfetch
     thefuck
@@ -123,6 +125,7 @@
     zed-editor
     nautilus
     cmake
+    cbonsai
     yazi
     obsidian
     kitty
@@ -155,6 +158,7 @@
     nodePackages_latest.js-beautify
     gotests
     fd
+    (pkgs.callPackage ./config/pokemon { })
   ];
 
   # pam services
