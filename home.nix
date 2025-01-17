@@ -5,7 +5,7 @@
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
+  colorScheme = inputs.nix-colors.colorSchemes.ayu-mirage;
 
   # gtk need to add custom files
   gtk = {
