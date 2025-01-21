@@ -100,6 +100,10 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -110,6 +114,9 @@
     (discord.override {
       withVencord = true;
     })
+    jellyfin
+    jellyfin-web
+    jellyfin-ffmpeg
     ispell
     git
     fastfetch
