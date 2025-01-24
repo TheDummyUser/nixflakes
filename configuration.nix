@@ -60,7 +60,7 @@
     LC_TELEPHONE = "en_IN";
     LC_TIME = "en_IN";
   };
-  programs.kdeconnect.enable = true;
+  # programs.kdeconnect.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -94,6 +94,7 @@
       "networkmanager"
       "wheel"
       "kvm"
+      "adbusers"
     ];
     packages = with pkgs; [ ];
   };
@@ -163,6 +164,8 @@
     gthumb
     ripgrep
     gotools
+    obs-studio
+    qbittorrent
     nodePackages_latest.js-beautify
     gotests
     fd
