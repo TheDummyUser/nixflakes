@@ -74,7 +74,7 @@
             gaps_in = 5
             gaps_out = 5
 
-            border_size = 3
+            border_size = 2
 
             # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
             col.active_border = rgb(${base09}) rgb(${base08}) 45deg
@@ -101,7 +101,7 @@
                 enabled = true
                 range = 4
                 render_power = 3
-                color = rgb(${base00})
+                color = rgb(${base07})
             }
 
             # https://wiki.hyprland.org/Configuring/Variables/#blur
@@ -153,7 +153,6 @@
         # windowrulev2 = rounding 0, floating:0, onworkspace:w[tv1]
         # windowrulev2 = bordersize 0, floating:0, onworkspace:f[1]
         # windowrulev2 = rounding 0, floating:0, onworkspace:f[1]
-
         # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
         dwindle {
             pseudotile = true # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below

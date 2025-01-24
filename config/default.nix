@@ -4,7 +4,7 @@
     ./zsh
     ./git
     ./hyprland
-    ./kitty
+    # ./kitty
     ./waybar
     ./spicetify
     ./rofi
@@ -16,6 +16,6 @@
     ./wlogout
     ./fastfetch
     ./zellij
-    ./nvf
+    # ./nvf
   ];
 }
