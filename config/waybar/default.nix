@@ -17,7 +17,6 @@
         ];
         modules-center = [ "clock" ];
         modules-right = [
-          "idle_inhibitor"
           "pulseaudio"
           "bluetooth"
           "network"
@@ -49,15 +48,6 @@
           rewrite = {
             "" = "  No Windows?";
           };
-        };
-        "idle_inhibitor" = {
-          "format" = "{icon}";
-          "format-icons" = {
-            "activated" = "  ";
-            "deactivated" = "  ";
-          };
-          "exec" = "$HOME/nixflakes/scripts/swayidle-start.sh";
-          "on-click" = "$HOME/nixflakes/scripts/swayidle-start.sh";
         };
         "tray" = {
           "icon-size" = 12;
@@ -96,12 +86,12 @@
             "󰤨 "
           ];
           format-ethernet = " {bandwidthDownOctets}";
-          format-wifi = "{icon}{signalStrength}%";
+          format-wifi = "{icon} {signalStrength}%";
           format-disconnected = "󰤮";
           tooltip = false;
         };
         "pulseaudio" = {
-          "format" = "{icon} {volume}%";
+          "format" = " {icon}  {volume}% ";
           "format-muted" = "󰝟";
           "tooltip" = false;
           "format-icons" = {
@@ -123,7 +113,7 @@
     style = ''
       * {
               border: none;
-              font-family:'FiraCode Nerd Font', 'Symbols Nerd Font Mono' ;
+              font-family :  'JetBrainsMono Nerd Font', 'FiraCode Nerd Font', 'Symbols Nerd Font Mono';
               font-size: 13px;
               font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
               min-height: 20px;
