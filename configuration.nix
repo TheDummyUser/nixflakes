@@ -68,7 +68,19 @@
     variant = "";
   };
 
-  services.xserver.enable = true;
+  services.xserver = {
+    enable = true;
+    windowManager = {
+      bspwm = {
+        enable = true;
+        configFile = "/home/gabbar/./.config/bspwm/bspwmrc";
+        sxhkd.configFile = "/home/gabbar/./.config/sxhkd/sxhkdrc";
+      };
+    };
+    excludePackages = with pkgs; [
+      xterm
+    ];
+  };
   services.displayManager.sddm.enable = true;
 
   programs.steam = {
@@ -128,16 +140,15 @@
     nitch
     httpie-desktop
     nixd
-    tmux
+    bspwm
+    sxhkd
     copyq
     nixfmt-rfc-style
     zed-editor
     nautilus
     cmake
-    cbonsai
     yazi
     obsidian
-    kitty
     waybar
     rofi
     firefox
@@ -166,14 +177,29 @@
     gotools
     obs-studio
     qbittorrent
+    bottles
     nodePackages_latest.js-beautify
     gotests
     fd
+    google-chrome
     (pkgs.callPackage ./config/pokemon { })
+
+    #core
+    bspwm
+    sxhkd
+    rofi
+    polybar
+    picom
+    feh
+    flameshot
+    #utility
+    nitrogen
+    alacritty
   ];
 
   # pam services
   # security.pam.services.swaylock = { };
+  programs.adb.enable = true;
   security = {
     polkit.enable = true;
     pam.services.hyprlock = { };
@@ -226,7 +252,11 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 8080 ];
+    allowedUDPPorts = [ ];
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
