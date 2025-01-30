@@ -192,6 +192,7 @@
     picom
     feh
     flameshot
+    bibata-cursors
     #utility
     nitrogen
     alacritty
