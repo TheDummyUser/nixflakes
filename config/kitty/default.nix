@@ -12,7 +12,7 @@
       bold_font = "auto";
       italic_font = "auto";
       bold_italic_font = "auto";
-      font_size = 10;
+      font_size = 11;
 
       #pages
       "ctrl+shift+up" = "scroll_line_up";
@@ -36,6 +36,7 @@
       confirm_os_window_close = 0;
 
       #border
+      window_padding_height = 0;
       window_padding_width = 10;
 
       background = "#${base00}";

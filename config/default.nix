@@ -8,7 +8,6 @@
     ./spicetify
     ./rofi
     ./zathura
-    ./foot
     ./dunst
     ./hyprlock
     ./wlogout
