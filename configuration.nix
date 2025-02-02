@@ -124,9 +124,7 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     curl
-    (discord.override {
-      withVencord = true;
-    })
+    vesktop
     jellyfin
     jellyfin-web
     jellyfin-ffmpeg
@@ -189,13 +187,11 @@
     sxhkd
     rofi
     polybar
-    picom
+    picom-pijulius
     feh
     flameshot
     bibata-cursors
     #utility
-    nitrogen
-    alacritty
   ];
 
   # pam services
@@ -246,7 +242,7 @@
 
   # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
+  # Enable thepicom-pijulius OpenSSH daemon.
   # services.openssh.enable = true;
 
   # Open ports in the firewall.

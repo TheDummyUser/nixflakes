@@ -30,20 +30,27 @@
         };
 
         "hyprland/workspaces" = {
-          "format" = "{icon}";
-          "tooltip" = "false";
-          "all-outputs" = true;
-          "sort-by-number" = true;
-          "format-icons" = {
-            "active" = " 󰮯 ";
-            "default" = " 󰊠 ";
+          format = "{icon}";
+          tooltip = "false";
+          all-outputs = false; # Required for persistent-workspaces to work
+          sort-by-number = true;
+
+          # Define persistent workspaces
+          persistent-workspaces = {
+            "1" = [ ]; # Always show workspace 1 on all outputs
+            "2" = [ ]; # Always show workspace 2 on all outputs
+            "3" = [ ]; # Adjust as needed
           };
-          on-scroll-up = "hyprctl dispatch workspace e+1";
-          on-scroll-down = "hyprctl dispatch workspace e-1";
+
+          format-icons = {
+            "active" = "󰮯"; # Active workspace
+            "default" = "󰊠"; # Occupied but inactive workspace
+            "persistent" = ""; # Use  for all persistent workspaces
+            # Alternatively, assign to specific workspaces:
+          };
         };
 
         "hyprland/window" = {
-          # max-length = 22;
           separate-outputs = false;
           rewrite = {
             "" = "  No Windows?";
@@ -111,52 +118,57 @@
       };
     };
     style = ''
-      * {
-              border: none;
-              font-family :  'JetBrainsMono Nerd Font', 'FiraCode Nerd Font', 'Symbols Nerd Font Mono';
-              font-size: 13px;
-              font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
-              min-height: 20px;
-            }
+          * {
+                  border: none;
+                  font-family :  'JetBrainsMono Nerd Font', 'FiraCode Nerd Font', 'Symbols Nerd Font Mono';
+                  font-size: 13px;
+                  font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
+                  min-height: 20px;
+                }
 
 
-            window#waybar {
-             background: #${config.colorScheme.palette.base00};
-            }
+                window#waybar {
+                 background: #${config.colorScheme.palette.base00};
+                }
 
-            #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit {
-            background-color: #${config.colorScheme.palette.base01};
-            color: #${config.colorScheme.palette.base06};
-            border-radius: 0px;
-            padding-left: 5px;
-            padding-right: 5px;
-            margin-top:5px;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            }
+                #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit {
+                background-color: #${config.colorScheme.palette.base01};
+                color: #${config.colorScheme.palette.base06};
+                border-radius: 5px;
+                padding-left: 5px;
+                padding-right: 5px;
+                margin-top:5px;
+                margin-right: 5px;
+                margin-bottom: 5px;
+                }
 
-            #tray,#bluetooth,#pulseaudio {
-            margin-right: 5px;
-            }
+                #tray,#bluetooth,#pulseaudio {
+                margin-right: 5px;
+                }
 
-            #tray {
-            font-size:13px;
-            }
+                #tray {
+                font-size:13px;
+                }
 
-            #workspaces {
-            padding: 0px 0px;
-            margin-left: 5px;
-            }
-            #workspaces button {
-            background-color: #${config.colorScheme.palette.base01};
-            color: #${config.colorScheme.palette.base03};
-            }
+                #workspaces {
+                padding: 0px 0px;
+                margin-left: 5px;
+                }
+                #workspaces button {
+                background-color: #${config.colorScheme.palette.base01};
+                color: #${config.colorScheme.palette.base03};
+                }
 
-            #workspaces button.active {
-            border-radius: 0px;
-            background: #${config.colorScheme.palette.base02};
-            color: #${config.colorScheme.palette.base05};
-            }
+                 #workspaces button.active {
+        background: #${config.colorScheme.palette.base02};
+        color: #${config.colorScheme.palette.base05};
+      }
+      #workspaces button.persistent {
+        color: #${config.colorScheme.palette.base04};
+      }
+      #workspaces button {
+        color: #${config.colorScheme.palette.base03};
+      }
     '';
   };
 }

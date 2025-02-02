@@ -45,12 +45,11 @@
         # Autostart necessary processes (like notifications daemons, status bars, etc.)
         # Or execute your favorite apps at launch like this:
         # exec-once = $terminal
-        exec-once = nm-applet & blueman-applet
+        exec-once = nm-applet
         # exec-once = waybar & hyprpaper & firefox
         exec-once = swww init
         exec-once = ~/nixflakes/randomImagePicker/main
-        exec-once = waybar & dunst &
-        exec-once = foot --server & discord
+        exec-once = ags run & dunst & vesktop
         # exec-once = bash ~/nixflakes/scripts/swayidle-start.sh
       exec-once = copyq --start-server
         #############################
@@ -71,14 +70,14 @@
 
         # https://wiki.hyprland.org/Configuring/Variables/#general
         general {
-            gaps_in = 5
+            gaps_in = 3
             gaps_out = 5
 
-            border_size = 2
+            border_size = 3
 
             # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
-            col.active_border = rgb(${base09}) rgb(${base08}) 45deg
-            col.inactive_border = rgb(${base04})
+            col.active_border = rgb(${base0E}) rgb(${base0E}) 45deg
+            col.inactive_border = rgb(${base02})
 
             # Set to true enable resizing windows by clicking and dragging on borders and gaps
             resize_on_border = false
@@ -91,7 +90,7 @@
 
         # https://wiki.hyprland.org/Configuring/Variables/#decoration
         decoration {
-            rounding = 0
+            rounding = 5
 
             # Change transparency of focused and unfocused windows
             active_opacity = 1.0
@@ -99,9 +98,9 @@
 
             shadow {
                 enabled = true
-                range = 4
-                render_power = 3
-                color = rgb(${base07})
+                range = 3
+                render_power = 6
+                color = rgb(${base06})
             }
 
             # https://wiki.hyprland.org/Configuring/Variables/#blur
