@@ -60,9 +60,6 @@
     LC_TELEPHONE = "en_IN";
     LC_TIME = "en_IN";
   };
-  # programs.kdeconnect.enable = true;
-
-  # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -70,13 +67,6 @@
 
   services.xserver = {
     enable = true;
-    windowManager = {
-      bspwm = {
-        enable = true;
-        configFile = "/home/gabbar/./.config/bspwm/bspwmrc";
-        sxhkd.configFile = "/home/gabbar/./.config/sxhkd/sxhkdrc";
-      };
-    };
     excludePackages = with pkgs; [
       xterm
     ];
@@ -94,7 +84,6 @@
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
   services.gvfs.enable = true;
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.defaultUserShell = pkgs.zsh;
   environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
@@ -111,17 +100,11 @@
     packages = with pkgs; [ ];
   };
 
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   services.jellyfin = {
     enable = true;
-    openFirewall = true;
   };
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     curl
     vesktop
@@ -132,7 +115,7 @@
     git
     fastfetch
     thefuck
-    zellij
+    # zellij
     eza
     go
     nitch
@@ -181,21 +164,12 @@
     fd
     google-chrome
     (pkgs.callPackage ./config/pokemon { })
-
-    #core
-    bspwm
-    sxhkd
-    rofi
-    polybar
-    picom-pijulius
-    feh
-    flameshot
-    bibata-cursors
-    #utility
+    tmux
+    pyprland
+    vscode
   ];
 
   # pam services
-  # security.pam.services.swaylock = { };
   programs.adb.enable = true;
   security = {
     polkit.enable = true;
@@ -216,51 +190,21 @@
     };
   };
 
-  # fonts.packages = with pkgs; [
-  #   (nerdfonts.override {
-  #     fonts = [
-  #       "FiraCode"
-  #       "JetBrainsMono"
-  #     ];
-  #   })
-  #   fira-code
-  #   jetbrains-mono
-  # ];
   fonts.packages = [
-    # pkgs.nerd-fonts._0xproto
     pkgs.nerd-fonts.fira-code
     pkgs.nerd-fonts.jetbrains-mono
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable thepicom-pijulius OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 8080 ];
+    allowedTCPPorts = [
+      8080
+      8096
+      8920
+    ];
     allowedUDPPorts = [ ];
   };
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "24.11";
 
 }
