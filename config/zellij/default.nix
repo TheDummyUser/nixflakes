@@ -9,6 +9,8 @@
   programs.zellij = {
     enable = true;
     settings = {
+      default_layout = "compact";
+      mouse_mode = true;
       theme = "custom";
       themes = {
         custom.fg = "#${config.colorScheme.palette.base05}";

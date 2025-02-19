@@ -12,8 +12,8 @@
     ./hyprlock
     ./wlogout
     ./fastfetch
-    ./zellij
+    # ./zellij
     ./kitty
-    ./bspwm
+    # ./bspwm
   ];
 }

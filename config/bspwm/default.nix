@@ -44,11 +44,12 @@
 
 
         # Focus and window behavior
+        bspc config pointer_follows_monitor true
         bspc config focus_follow_pointer true
         bspc config history_aware_focus true
 
         # Window appearance
-        bspc config border_width 3
+        bspc config border_width 2
         bspc config window_gap 5
 
 

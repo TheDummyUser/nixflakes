@@ -17,6 +17,7 @@
         ];
         modules-center = [ "clock" ];
         modules-right = [
+          "cpu"
           "pulseaudio"
           "bluetooth"
           "network"
@@ -69,6 +70,7 @@
             "device1"
             "device2"
           ]; # // preference list deciding the displayed device
+
           "tooltip-format" = ''
             {controller_alias}	{controller_address}
 
@@ -115,6 +117,23 @@
             ];
           };
         };
+
+        "cpu" = {
+          "interval" = 10;
+
+          "format" = "󰻠 {}%  {icon0} {icon1} {icon2} {icon3} {icon4} {icon5} {icon6} {icon7}";
+          "format-icons" = [
+            "▁"
+            "▂"
+            "▃"
+            "▄"
+            "▅"
+            "▆"
+            "▇"
+            "█"
+          ];
+
+        };
       };
     };
     style = ''
@@ -131,7 +150,7 @@
                  background: #${config.colorScheme.palette.base00};
                 }
 
-                #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit {
+                #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit, #cpu {
                 background-color: #${config.colorScheme.palette.base01};
                 color: #${config.colorScheme.palette.base06};
                 border-radius: 5px;
