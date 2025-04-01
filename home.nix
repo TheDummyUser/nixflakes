@@ -5,7 +5,7 @@
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.tokyo-night-dark;
+  colorScheme = inputs.nix-colors.colorSchemes.tomorrow-night;
 
   # gtk need to add custom files
   gtk = {
@@ -50,4 +50,10 @@
     enable = true;
     nix-direnv.enable = true;
   };
+  services.kdeconnect = {
+    enable = true;
+    package = pkgs.kdePackages.kdeconnect-kde;
+    indicator = true;
+  };
+
 }
