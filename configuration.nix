@@ -28,14 +28,14 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  networking.stevenblack = {
-    enable = true;
-    block = [
-      "fakenews"
-      "gambling"
-      "porn"
-    ];
-  };
+  # networking.stevenblack = {
+  #   enable = true;
+  #   block = [
+  #     "fakenews"
+  #     "gambling"
+  #     "porn"
+  #   ];
+  # };
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
 
@@ -67,18 +67,32 @@
 
   services.xserver = {
     enable = true;
+    windowManager = {
+      bspwm = {
+        enable = true;
+        configFile = "/home/gabbar/./.config/bspwm/bspwmrc";
+        sxhkd.configFile = "/home/gabbar/./.config/sxhkd/sxhkdrc";
+      };
+      qtile = {
+        enable = true;
+        extraPackages =
+          python3Packages: with python3Packages; [
+            qtile-extras
+          ];
+      };
+    };
     excludePackages = with pkgs; [
       xterm
     ];
   };
   services.displayManager.sddm.enable = true;
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  };
+  # programs.steam = {
+  #   enable = true;
+  #   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+  #   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+  #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  # };
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -103,7 +117,9 @@
   nixpkgs.config.allowUnfree = true;
   services.jellyfin = {
     enable = true;
+    openFirewall = true;
   };
+
   environment.systemPackages = with pkgs; [
     wget
     curl
@@ -132,7 +148,6 @@
     obsidian
     waybar
     rofi
-    firefox
     swww
     networkmanagerapplet
     hyprshot
@@ -167,6 +182,18 @@
     tmux
     pyprland
     vscode
+    floorp
+    zip
+    unzip
+    wineWowPackages.waylandFull
+    winetricks
+
+    bspwm
+    sxhkd
+    polybar
+    picom-pijulius
+    flameshot
+    feh
   ];
 
   # pam services
@@ -195,15 +222,31 @@
     pkgs.nerd-fonts.jetbrains-mono
   ];
 
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      8080
-      8096
-      8920
-    ];
-    allowedUDPPorts = [ ];
-  };
+  # networking.firewall = {
+  #   enable = true;
+  #   allowedTCPPorts = [
+  #     8080
+  #     8096
+  #     8920
+  #   ];
+  #   allowedUDPPorts = [ ];
+  # };
+  #
+  networking.networkmanager.insertNameservers = [
+    "8.8.8.8"
+    "1.0.0.1"
+    "1.1.1.1"
+    "208.67.222.222"
+  ];
+  # networking.firewall = {
+  #     enable = true;
+  #     allowedTCPPortRanges = [
+  #       { from = 1714; to = 1764; } # KDE Connect
+  #     ];
+  #     allowedUDPPortRanges = [
+  #       { from = 1714; to = 1764; } # KDE Connect
+  #     ];
+  #   };
 
   system.stateVersion = "24.11";
 

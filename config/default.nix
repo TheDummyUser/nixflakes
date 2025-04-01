@@ -14,6 +14,7 @@
     ./fastfetch
     # ./zellij
     ./kitty
-    # ./bspwm
+    ./bspwm
+    # ./qtile
   ];
 }

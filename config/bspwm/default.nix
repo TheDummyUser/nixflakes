@@ -27,7 +27,7 @@
 
         # Set up display
         xrandr --output HDMI-2 --mode 1920x1080 --rate 60 &
-        feh --bg-fill /mnt/Localdisk/folder/wall/wallhaven-2y77jy_1920x1080.png
+        feh --bg-fill /mnt/Localdisk/folder/wall/wallhaven-m3j7q9_3840x2160.png
 
         # Launch Polybar
         ~/.config/polybar/launch.sh
@@ -49,7 +49,7 @@
         bspc config history_aware_focus true
 
         # Window appearance
-        bspc config border_width 2
+        bspc config border_width 3
         bspc config window_gap 5
 
 
