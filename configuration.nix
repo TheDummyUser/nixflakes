@@ -187,9 +187,9 @@
     unzip
     wineWowPackages.waylandFull
     winetricks
+    mari0
+    toipe
 
-    bspwm
-    sxhkd
     polybar
     picom-pijulius
     flameshot
@@ -222,16 +222,16 @@
     pkgs.nerd-fonts.jetbrains-mono
   ];
 
-  # networking.firewall = {
-  #   enable = true;
-  #   allowedTCPPorts = [
-  #     8080
-  #     8096
-  #     8920
-  #   ];
-  #   allowedUDPPorts = [ ];
-  # };
-  #
+  networking.firewall = {
+    enable = false;
+    allowedTCPPorts = [
+      8080
+      5037
+      8022
+    ];
+    allowedUDPPorts = [ ];
+  };
+
   networking.networkmanager.insertNameservers = [
     "8.8.8.8"
     "1.0.0.1"

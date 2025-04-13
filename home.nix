@@ -5,7 +5,7 @@
     inputs.nix-colors.homeManagerModules.default
   ];
 
-  colorScheme = inputs.nix-colors.colorSchemes.tomorrow-night;
+  colorScheme = inputs.nix-colors.colorSchemes.chalk;
 
   # gtk need to add custom files
   gtk = {
