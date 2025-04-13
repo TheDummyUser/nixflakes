@@ -1,8 +1,8 @@
 { pkgs }:
 let
   image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/5g/wallhaven-5g2lm1.jpg";
-    sha256 = "sha256-SWIYQdc51H39rcrZkLNXac/jy2KxYn/Bhg42ZmQP5U8=";
+    url = "https://w.wallhaven.cc/full/r2/wallhaven-r2pqlw.jpg";
+    sha256 = "sha256-co9nswlXxsjCYiWuesMHQgTS04M9OdhRBfOtCAOgpwI=";
   };
 in
 pkgs.stdenv.mkDerivation {
