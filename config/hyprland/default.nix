@@ -224,7 +224,8 @@
       bind = $mainMod, PRINT, exec, hyprshot -m window
       bind = $mainMod, SPACE, exec, ~/nixflakes/randomImagePicker/main
       # Screenshot a monitor
-      bind = , PRINT, exec, hyprshot -m output
+      bind = , PRINT, exec, grim -g "$(slurp)" - | swappy -f -
+      bind = $mainMod, A, exec, timestamp=$(date +'%Y-%m-%d_%H-%M-%S'); grim -c "$timestamp.png" && mv "$timestamp.png" ~/Pictures/
       bind = $mainMod, L, exec, hyprlock
       bind = $mainMod SHIFT, V,exec, pypr toggle term
 
