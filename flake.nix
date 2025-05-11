@@ -42,7 +42,7 @@
               inputs.home-manager.nixosModules.home-manager
               {
                 home-manager = {
-                  backupFileExtension = "hmbackup";
+                  backupFileExtension = "hmbackup1";
                   useGlobalPkgs = true;
                   useUserPackages = true;
                   extraSpecialArgs = { inherit inputs system user; };

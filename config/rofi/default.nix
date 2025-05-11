@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 let
   image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/ln/wallhaven-lnkxq0.jpg";
-    sha256 = "sha256-hQ0cBkFDlGLws/Hnbdx4fuRqMXgPCgJ5glNTRhVsRhk=";
+    url = "https://w.wallhaven.cc/full/zp/wallhaven-zpg9jv.jpg";
+    sha256 = "sha256-TGHqbr6WmnDg9nQ3kS9aOmpmd0O7tAkimwnvmSqOths=";
   };
 in
 {

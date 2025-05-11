@@ -25,7 +25,7 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    initExtra = "clear && pokemon-colorscripts -r --no-title";
+    initContent = "clear && pokemon-colorscripts -r --no-title";
     shellAliases = {
       ll = "ls -l";
       update = "cd ~/nixflakes && sudo nixos-rebuild switch --flake .#default && cd ~/";
