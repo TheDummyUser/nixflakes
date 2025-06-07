@@ -1,0 +1,7 @@
+keys:
+  - &gabbar_key age16dltjtjprwrjh0h8pjst70h5frc3v4kykr4wm47g00yenta36uaslxk2fn
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    key_groups:
+      - age:
+          - *gabbar_key
