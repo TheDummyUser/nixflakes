@@ -48,6 +48,7 @@
       exec-once = nm-applet
       # exec-once = waybar & hyprpaper & firefox
       exec-once = swww init
+      exec-once = swww-daemon
       exec-once = ~/nixflakes/randomImagePicker/main
       exec-once = pypr
       exec-once = waybar & dunst & vesktop

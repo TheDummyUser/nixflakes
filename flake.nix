@@ -14,6 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # nvf.url = "github:notashelf/nvf";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     inputs@{ self, nixpkgs, ... }:
@@ -27,7 +31,6 @@
           # rebuild with `nixos-rebuild switch --flake .#dev`
           default = nixpkgs.lib.nixosSystem rec {
             system = "x86_64-linux";
-
             specialArgs = {
               inherit (nixpkgs) lib;
               inherit
@@ -37,8 +40,8 @@
                 user
                 ;
             };
-
             modules = [
+              inputs.sops-nix.nixosModules.sops
               inputs.home-manager.nixosModules.home-manager
               {
                 home-manager = {
@@ -50,6 +53,7 @@
                     imports = [
                       inputs.spicetify-nix.homeManagerModules.default
                       inputs.nix-colors.homeManagerModule
+                      inputs.sops-nix.homeManagerModules.sops
                       # inputs.nvf.homeManagerModules.default
                       ./home.nix
                     ];
@@ -57,7 +61,7 @@
                       username = user;
                       homeDirectory = "/home/${user}";
                       # do not change this value
-                      stateVersion = "24.11";
+                      stateVersion = "25.05";
                     };
                     # Let Home Manager install and manage itself.
                     programs.home-manager.enable = true;
