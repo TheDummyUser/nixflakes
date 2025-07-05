@@ -171,6 +171,12 @@
     slurp
     swappy
     dysk
+
+    wl-clipboard
+    clipman
+    eww
+
+    gemini-cli
   ];
 
   # pam services
@@ -186,7 +192,7 @@
   };
   environment.sessionVariables.NIXOS_OZONE_WL = 1;
   services.gnome.gnome-keyring.enable = true;
-  security.pam.services.gdm.enableGnomeKeyring = true;
+  security.pam.services.greetd.enableGnomeKeyring = true;
 
   services = {
     emacs = {
@@ -217,7 +223,7 @@
     "8.8.8.8"
     "1.0.0.1"
     "1.1.1.1"
-    "208.67.222.222"
+    # "208.67.222.222"
   ];
   # networking.firewall = {
   #     enable = true;

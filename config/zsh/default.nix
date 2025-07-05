@@ -28,7 +28,7 @@
     initContent = "clear && pokemon-colorscripts -r --no-title";
     shellAliases = {
       ll = "ls -l";
-      update = "cd ~/nixflakes && sudo nixos-rebuild switch --flake .#default && cd ~/";
+      update = "cd ~/nixflakes && sudo nixos-rebuild switch --flake .# && cd ~/";
       del = "sudo nix-collect-garbage -d && update";
       zed = "zeditor";
       doom = "~/.config/emacs/bin/doom";

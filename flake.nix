@@ -29,7 +29,7 @@
         {
           # update with `nix flake update`
           # rebuild with `nixos-rebuild switch --flake .#dev`
-          default = nixpkgs.lib.nixosSystem rec {
+          interstellar = nixpkgs.lib.nixosSystem rec {
             system = "x86_64-linux";
             specialArgs = {
               inherit (nixpkgs) lib;
