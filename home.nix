@@ -56,11 +56,11 @@
     nix-direnv.enable = true;
   };
 
-  # services.kdeconnect = {
-  #   enable = true;
-  #   package = pkgs.kdePackages.kdeconnect-kde;
-  #   indicator = true;
-  # };
+  services.kdeconnect = {
+    enable = true;
+    package = pkgs.kdePackages.kdeconnect-kde;
+    indicator = true;
+  };
 
   # sops-nix configuration for SSH keys
   sops = {
