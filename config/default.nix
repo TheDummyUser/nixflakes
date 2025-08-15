@@ -14,7 +14,9 @@
     ./fastfetch
     # ./zellij
     ./kitty
-    ./bspwm
+    # ./bspwm
     # ./qtile
+    # ./fish
+    ./emacs
   ];
 }

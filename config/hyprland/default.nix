@@ -144,9 +144,8 @@
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
         "$mainMod, PRINT, exec, hyprshot -m window"
+        ", PRINT, exec, hyprshot -m output"
         "$mainMod, SPACE, exec, ${config.home.homeDirectory}/nixflakes/randomImagePicker/main"
-        ", PRINT, exec, grim -g ''$(slurp)'' - | swappy -f -"
-        # $mainMod, A, exec, timestamp=$(date +'%Y-%m-%d_%H-%M-%S'); grim -c "$timestamp.png" && mv "$timestamp.png" '' + config.home.homeDirectory + ''/Pictures/
         "$mainMod, L, exec, hyprlock"
         # "$mainMod SHIFT, V,exec, pypr toggle term"
         "$mainMod, left, movefocus, l"

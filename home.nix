@@ -64,7 +64,7 @@
 
   # sops-nix configuration for SSH keys
   sops = {
-    defaultSopsFile = ./secrets/secrets.yaml;  # Replace with your actual path
+    defaultSopsFile = ./secrets/secrets.yaml; # Replace with your actual path
     defaultSopsFormat = "yaml";
 
     # The age key file location
@@ -111,5 +111,17 @@
     age
     sops
     openssh
+
+    # fish plugins start
+    fishPlugins.done
+    fishPlugins.fzf-fish
+    fishPlugins.forgit
+    fishPlugins.hydro
+    fzf
+    fishPlugins.grc
+    grc
+    fasd
+    # fish plugins end
   ];
+
 }
