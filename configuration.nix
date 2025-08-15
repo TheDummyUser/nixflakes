@@ -1,8 +1,10 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+{
+  inputs,
+  config,
+  pkgs,
 
-{ config, pkgs, ... }:
+  ...
+}:
 
 {
   imports = [
@@ -40,11 +42,11 @@
   time.timeZone = "Asia/Kolkata";
 
   #file system
-  boot.supportedFilesystems = [ "ntfs" ];
-  fileSystems."/mnt/Localdisk" = {
-    device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-    fsType = "ntfs-3g";
-  };
+  #boot.supportedFilesystems = [ "ntfs" ];
+  #fileSystems."/mnt/Localdisk" = {
+  #  device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+  #  fsType = "ntfs-3g";
+  #};
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
@@ -77,10 +79,19 @@
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
   services.blueman.enable = true;
   services.gvfs.enable = true;
+
+  # users.defaultUserShell = pkgs.fish;
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = with pkgs; [ zsh ];
+
+  environment.shells = with pkgs; [
+    # fish
+    zsh
+  ];
   programs.zsh.enable = true;
+  # programs.fish.enable = true;
+
   users.users.gabbar = {
+    # shell = pkgs.fish;
     shell = pkgs.zsh;
     isNormalUser = true;
     description = "gabbar";
@@ -109,14 +120,11 @@
     ispell
     git
     fastfetch
-    pay-respects
     eza
     go
-    nitch
+
     httpie-desktop
     nixd
-    bspwm
-    sxhkd
     nixfmt-rfc-style
     zed-editor
     nautilus
@@ -148,37 +156,27 @@
     gotools
     obs-studio
     qbittorrent
-    bottles
-    nodePackages_latest.js-beautify
+    #nodePackages_latest.js-beautify
     gotests
-    fd
-    google-chrome
+
     (pkgs.callPackage ./config/pokemon { })
     tmux
     pyprland
 
-    floorp
+    firefox
     zip
     unzip
 
     toipe
 
-    flameshot
-
     libreoffice
     stremio
-    grim
-    slurp
-    swappy
     dysk
 
     wl-clipboard
     clipman
-    eww
 
-    gemini-cli
   ];
-
   # pam services
   programs.adb.enable = true;
   security = {
@@ -193,14 +191,6 @@
   environment.sessionVariables.NIXOS_OZONE_WL = 1;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd.enableGnomeKeyring = true;
-
-  services = {
-    emacs = {
-      enable = true;
-      package = pkgs.emacs-gtk;
-      install = true;
-    };
-  };
 
   fonts.packages = [
     pkgs.nerd-fonts.fira-code

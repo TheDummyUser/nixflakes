@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	dirFolder := "/mnt/Localdisk/folder/wall/"
+	dirFolder := "/home/gabbar/Pictures/wall"
 	files, err := os.ReadDir(dirFolder)
 	if err != nil {
 		log.Fatal(err)

@@ -21,9 +21,9 @@
       "ctrl+shift+j" = "scroll_line_down";
 
       #curosr
-      cursor_spape = "block";
-
+      cursor_shape = "block";
       scrollback_line = 2000;
+      cursor_trail = 1;
 
       # bell
       enable_audio_bell = "no";

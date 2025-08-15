@@ -49,9 +49,14 @@
           format = "┌──────────────────────Software──────────────────────┐";
         }
         {
-          type = "custom";
-          format = " OS -> NixOS 25.05 (Warbler) ";
+          type = "command";
+          key = " OS -> ";
+          text = ''
+            source /etc/os-release
+            echo "$PRETTY_NAME"
+          '';
         }
+
         {
           type = "kernel";
           key = "│ ├ ";
