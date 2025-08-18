@@ -175,7 +175,9 @@
 
     wl-clipboard
     clipman
-
+    fd
+    libtool
+    libnotify
   ];
   # pam services
   programs.adb.enable = true;
@@ -188,6 +190,8 @@
     enable = true;
     xwayland.enable = true;
   };
+  xdg.portal.enable = true;
+
   environment.sessionVariables.NIXOS_OZONE_WL = 1;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd.enableGnomeKeyring = true;

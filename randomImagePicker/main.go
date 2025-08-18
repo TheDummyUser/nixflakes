@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -15,18 +16,50 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(files) == 0 {
-		log.Fatal("No files in the directory")
+
+	// Filter: only image files, skip directories
+	var imageFiles []os.DirEntry
+	validExts := []string{".jpg", ".jpeg", ".png", ".webp"}
+
+	for _, f := range files {
+		if f.IsDir() {
+			continue
+		}
+		ext := strings.ToLower(filepath.Ext(f.Name()))
+		for _, v := range validExts {
+			if ext == v {
+				imageFiles = append(imageFiles, f)
+				break
+			}
+		}
 	}
-	maxIndex := big.NewInt(int64(len(files)))
+
+	// No valid images found
+	if len(imageFiles) == 0 {
+		exec.Command("notify-send", "No image files found").Run()
+		log.Fatal("No image files in the directory")
+	}
+
+	// Pick a random image
+	maxIndex := big.NewInt(int64(len(imageFiles)))
 	randomIndex, err := rand.Int(rand.Reader, maxIndex)
 	if err != nil {
 		log.Fatal(err)
 	}
-	selectedIndex := int(randomIndex.Int64())
-	selectedFile := files[selectedIndex].Name()
+	selectedFile := imageFiles[randomIndex.Int64()].Name()
 	selectedFilePath := filepath.Join(dirFolder, selectedFile)
-	cmd := exec.Command("swww", "img", selectedFilePath)
+
+	// Ensure swww daemon is running
+	exec.Command("swww", "daemon").Run()
+
+	// Set wallpaper
+	cmd := exec.Command(
+		"swww",
+		"img",
+		"--transition-type", "wipe",
+		"--transition-step", "60",
+		selectedFilePath,
+	)
 
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("Error running swww command: %v", err)
