@@ -28,16 +28,20 @@
           envrc
 
           corfu
+          cape
 
           lsp-mode
           lsp-ui
           flycheck
+          yasnippet
           # lsp-treemacs  # only if you keep those treemacs bindings
 
           go-mode
           nix-mode
           web-mode
           typescript-mode # optional
+
+          lsp-tailwindcss
           elsa
 
           transient
