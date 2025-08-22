@@ -1,6 +1,30 @@
-{ pkgs, config, ... }:
 {
-  services.emacs.enable = true;
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+{
+
+  home.packages = with pkgs; [
+    # Spell checking
+    (aspellWithDicts (
+      dicts: with dicts; [
+        en
+        en-computers
+        en-science
+      ]
+    ))
+
+    # Language servers for LSP
+    gopls # Go language server
+    nil # Nix language server
+    nixd # Alternative Nix language server
+
+    # Additional tools that LSP might need
+    gotools # Go development tools
+    delve # Go debugger
+  ];
 
   home.file.".emacs.d/init.el".source =
     config.lib.file.mkOutOfStoreSymlink /home/gabbar/nixflakes/config/emacs/emacs.el;
@@ -11,44 +35,80 @@
       with pkgs;
       ((emacsPackagesFor emacs-gtk).emacsWithPackages (
         epkgs: with epkgs; [
-          which-key
-          vertico
-          orderless
-          consult
-          consult-dir
-          dashboard
-          doom-themes
-          doom-modeline
-          evil
-          evil-collection
-          general
+          # Core framework packages
+          use-package # Package configuration framework
+          evil # Vim keybindings
+          evil-collection # Evil bindings for various modes
+          undo-tree # Better undo system
+          general # Key binding framework
+          which-key # Key discovery and help
 
-          projectile
-          consult-projectile
-          envrc
+          # Completion and navigation
+          ivy # Completion framework
+          counsel # Collection of Ivy-enhanced commands
+          swiper # Ivy-based search
+          ivy-rich # Enhanced Ivy interface
+          company # Auto-completion
+          company-box # Better company UI
 
-          corfu
-          cape
+          # Project management
+          projectile # Project interaction library
+          counsel-projectile # Ivy integration for Projectile
 
-          lsp-mode
-          lsp-ui
-          flycheck
-          yasnippet
-          # lsp-treemacs  # only if you keep those treemacs bindings
+          # Language Server Protocol (LSP)
+          lsp-mode # Language Server Protocol client
+          lsp-ui # UI modules for lsp-mode
+          lsp-ivy # Ivy integration for LSP
+          vterm
 
-          go-mode
-          nix-mode
-          web-mode
-          typescript-mode # optional
+          # Language modes
+          go-mode # Go language support
+          nix-mode # Nix expression language support
 
-          lsp-tailwindcss
-          elsa
+          # Development tools
+          flycheck # Syntax checking
+          direnv # Environment variable integration
+          magit # Git interface
+          smartparens # Automatic pairing
 
-          transient
-          magit
+          # File management
+          treemacs # File tree sidebar
+          treemacs-evil # Evil bindings for Treemacs
+          treemacs-projectile # Projectile integration for Treemacs
 
-          avy
-          multiple-cursors
+          # UI and themes
+          doom-themes # Doom Emacs theme collection
+          doom-modeline # Doom-style modeline
+          all-the-icons # Icon fonts
+          dashboard # Startup screen
+
+          # Additional utilities
+          helpful # Better help system
+          perspective # Workspace management
+          hydra # Key binding macros
+
+          # Tree-sitter support (optional but recommended)
+          treesit-auto
+          treesit-grammars.with-all-grammars
+
+          # Additional packages for completeness
+          vertico # Alternative to ivy (can coexist)
+          orderless # Alternative matching
+          marginalia # Enhanced minibuffer annotations
+          markdown-mode # Markdown major mode
+          gruvbox-theme # Alternative theme
+          elcord # Discord rich presence
+          visual-fill-column # Soft wrapping at column
+          org-node # Zettelkasten for org
+          org-superstar # Better org bullets
+          page-break-lines # Nice page break lines
+
+          # Search tools (for counsel-ag, counsel-projectile-ag)
+          ag # The Silver Searcher
+
+          # Additional LSP and development tools
+          yasnippet # Snippet system
+          yasnippet-snippets # Snippet collections
         ]
       ));
   };

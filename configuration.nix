@@ -121,7 +121,6 @@
     git
     fastfetch
     eza
-    go
 
     httpie-desktop
     nixd
