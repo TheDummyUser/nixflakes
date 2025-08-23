@@ -42,11 +42,11 @@
   time.timeZone = "Asia/Kolkata";
 
   #file system
-  #boot.supportedFilesystems = [ "ntfs" ];
-  #fileSystems."/mnt/Localdisk" = {
-  #  device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-  #  fsType = "ntfs-3g";
-  #};
+  boot.supportedFilesystems = [ "ntfs" ];
+  fileSystems."/mnt/Localdisk" = {
+   device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+   fsType = "ntfs-3g";
+  };
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
@@ -177,6 +177,7 @@
     fd
     libtool
     libnotify
+    wineWowPackages.staging
   ];
   # pam services
   programs.adb.enable = true;

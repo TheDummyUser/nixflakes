@@ -1,22 +1,26 @@
 ;; -*- lexical-binding: t; -*-
-;; Nix-managed Doom-like Emacs configuration - final version with all fixes
+;;
+;; Doom Emacs-like configuration for Nix-managed setup
+;; All packages installed via Nix, no auto-downloads at runtime.
+;; User customizations:
+;;   - No backup/auto-save system
+;;   - Aggressive GC and native compilation settings
+;;   - Dashboard shown only if not running as emacsclient/daemon (else *scratch*)
+;;   - which-key popup height set to 0.3
+;;   - JetBrainsMono Nerd Font, size 10
 
-;; Disable backup, autosave, lockfiles
-(setq make-backup-files nil
-      auto-save-default nil
-      create-lockfiles nil
-      auto-save-list-file-prefix nil
-      version-control nil
-      kept-new-versions 0 kept-old-versions 0)
-
+;;; --- Core Settings ---
 (setq inhibit-startup-message t
       initial-scratch-message nil
       ring-bell-function 'ignore
       custom-file (expand-file-name "custom.el" user-emacs-directory))
-(when (file-exists-p custom-file) (load custom-file))
 
-;; Font and UI
-(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font Mono" :height 120)
+(when (file-exists-p custom-file)
+  (load custom-file))
+
+;; Set font globally: JetBrainsMono Nerd Font size 14
+(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font Mono":height 100)
+
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -25,8 +29,8 @@
 (column-number-mode 1)
 (save-place-mode 1)
 (global-auto-revert-mode 1)
-
-;; Window splitting preference: horizontal by default
+(setq make-backup-files nil) ; stop creating ~ files
+;; Always horizontally split windows
 (setq split-height-threshold nil
       split-width-threshold 120)
 (setq split-window-preferred-function
@@ -36,93 +40,160 @@
             (and (window-splittable-p window)
                  (split-window window)))))
 
-;;; Garbage Collection & Native Compilation
-(setq gc-cons-threshold (* 100 1024 1024))
-(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold (* 4 1024 1024))))
+;;; --- GC and Native Compilation Optimizations ---
+(setq gc-cons-threshold (* 100 1024 1024)) ; 100mb at startup for fast load
+(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold (* 4 1024 1024)))) ; tighten after startup
+
 (when (fboundp 'native-compile-async)
   (setq native-comp-jit-compilation t
         native-comp-speed 3
         native-comp-warning-on-missing-native t))
 
-;;; use-package set to nix because nix pkg manager manages them
-(setq use-package-always-ensure nil)
+;;; --- use-package Setup ---
+(setq use-package-always-ensure nil) ; Do NOT install packages at runtime
 
-;;; Evil & General
-(use-package evil :init (setq evil-want-integration t evil-want-keybinding nil
-                                   evil-want-C-u-scroll t evil-want-C-i-jump nil
-                                   evil-respect-visual-line-mode t evil-undo-system 'undo-tree)
-  :config (evil-mode 1))
-(use-package evil-collection :after evil :config (evil-collection-init))
-(use-package general :config
-  (general-create-definer doom/leader-keys :keymaps '(normal insert visual emacs)
-    :prefix "SPC" :global-prefix "C-SPC")
-  (general-create-definer doom/local-leader-keys :keymaps '(normal insert visual emacs)
-    :prefix "SPC m" :global-prefix "C-SPC m"))
+;;; --- Evil Mode and General ---
 
-;;; which-key
-(use-package which-key :init
-  (setq which-key-separator " " which-key-prefix-prefix "+"
-        which-key-allow-imprecise-window-fit nil which-key-popup-type 'side-window
+(use-package evil
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding nil
+        evil-want-C-u-scroll t
+        evil-want-C-i-jump nil
+        evil-respect-visual-line-mode t
+        evil-undo-system 'undo-tree)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
+
+(use-package undo-tree
+  :config (global-undo-tree-mode 1))
+
+(use-package general
+  :config
+  (general-create-definer doom/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+  (general-create-definer doom/local-leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC m"
+    :global-prefix "C-SPC m"))
+
+;;; --- which-key (popup height=0.3) ---
+(use-package which-key
+  :init
+  (setq which-key-separator " "
+        which-key-prefix-prefix "+"
+        which-key-allow-imprecise-window-fit nil
+        which-key-popup-type 'side-window
         which-key-side-window-max-height 0.3)
-  :config (which-key-mode) (setq which-key-idle-delay 0.3))
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 0.3))
 
-;;; Ivy & Completion
-(use-package ivy :bind (("C-s" . swiper)) :config
+;;; --- File Finding, Completion, Projects ---
+
+(use-package ivy
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :config
   (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t ivy-wrap t ivy-count-format "(%d/%d) "
+  (setq ivy-use-virtual-buffers t
+        ivy-wrap t
+        ivy-count-format "(%d/%d) "
         enable-recursive-minibuffers t
-        ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order) (t . ivy--regex-plus))))
-(use-package counsel :after ivy :bind (("M-x" . counsel-M-x)
-                                       ("C-x b" . counsel-ibuffer)
-                                       ("C-x C-f" . counsel-find-file)
-                                       :map minibuffer-local-map ("C-r" . counsel-minibuffer-history))
-  :config (setq ivy-initial-inputs-alist nil))
+        ivy-re-builders-alist
+        '((ivy-bibtex . ivy--regex-ignore-order)
+          (t . ivy--regex-plus))))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history))
+  :config
+  (setq ivy-initial-inputs-alist nil))
+
 (use-package swiper)
 (use-package ivy-rich :after ivy :config (ivy-rich-mode 1))
+
+(use-package company
+  :config
+  (global-company-mode)
+  (setq company-idle-delay 0.3
+        company-minimum-prefix-length 2
+        company-show-numbers t
+        company-tooltip-align-annotations t
+        company-tooltip-flip-when-above t))
+
+(use-package company-box
+  :after company
+  :hook (company-mode . company-box-mode))
+
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :after yasnippet)
+
+;; Company + Yasnippet integration
+(defun company-yasnippet-or-completion ()
+  (interactive)
+  (let ((yas-fallback-behavior
+         (apply #'company-complete-common nil)))
+    (unless (yas-expand)
+      (call-interactively 'company-complete-common))))
+
+(define-key company-active-map (kbd "TAB") 'company-yasnippet-or-completion)
+(define-key company-active-map (kbd "<tab>") 'company-yasnippet-or-completion)
+
+(use-package projectile
+  :config
+  (projectile-mode 1)
+  (setq projectile-completion-system 'ivy
+        projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :after (counsel projectile)
+  :config (counsel-projectile-mode))
+
+;;; --- Syntax checking & LSP ---
+
+(use-package flycheck
+  :config
+  (global-flycheck-mode)
+  (setq flycheck-display-errors-delay 0.1
+        flycheck-emacs-lisp-load-path 'inherit))
 
 ;; Keep undo-tree in memory only, no on-disk files
 (with-eval-after-load 'undo-tree
   (setq undo-tree-auto-save-history nil))
 
 
-
-;;; Company & UI
-(use-package company :config
-  (global-company-mode)
-  (setq company-idle-delay 0.3
-        company-minimum-prefix-length 2
-        company-show-numbers t
-        company-tooltip-align-annotations t
-        company-tooltip-flip-when-above t
-        ;; Remove snippet backend to avoid placeholder expansion
-        company-backends (mapcar (lambda (b)
-                                   (if (and (listp b) (memq 'company-yasnippet b))
-                                       (remove 'company-yasnippet b)
-                                     b))
-                                 company-backends)))
-(use-package company-box :after company :hook (company-mode . company-box-mode))
-
-;;; Projectile & Counsel-Projectile
-(use-package projectile :config
-  (projectile-mode 1)
-  (setq projectile-completion-system 'ivy
-        projectile-switch-project-action #'projectile-dired))
-(use-package counsel-projectile :after (counsel projectile) :config (counsel-projectile-mode))
-
-;;; Flycheck
-(use-package flycheck :config
-  (global-flycheck-mode)
-  (setq flycheck-display-errors-delay 0.1
-        flycheck-emacs-lisp-load-path 'inherit))
-
-;;; LSP Mode & UI
-(use-package lsp-mode :init
-  (setq lsp-keymap-prefix "C-c l"
-        lsp-enable-snippet nil
-        lsp-gopls-use-placeholders nil
-        lsp-completion-provider :capf)
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
   :hook ((go-mode . lsp-deferred)
          (nix-mode . lsp-deferred)
+	 (rjsx-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred)
   :config
@@ -131,6 +202,7 @@
         lsp-file-watch-threshold 2000
         lsp-eldoc-render-all t
         lsp-idle-delay 0.6
+        lsp-completion-provider :capf
         lsp-headerline-breadcrumb-enable nil
         lsp-restart 'auto-restart
         lsp-enable-symbol-highlighting t
@@ -139,12 +211,14 @@
         lsp-signature-render-documentation nil
         lsp-modeline-code-actions-enable t
         lsp-modeline-diagnostics-enable t
-        lsp-format-buffer-on-save t
         lsp-log-io nil))
-(use-package lsp-ui :after lsp-mode :commands lsp-ui-mode
+
+(use-package lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode
   :config
   (setq lsp-ui-peek-always-show t
-        lsp-ui-sideline-show-hover t
+        lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-diagnostics t
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-doc-enable nil
@@ -152,88 +226,272 @@
         lsp-ui-doc-delay 2
         lsp-ui-peek-fontify 'on-demand
         lsp-ui-sideline-show-code-actions t))
-(use-package lsp-ivy :after (lsp-mode ivy) :commands lsp-ivy-workspace-symbol)
 
-;;; Go & Nix Modes
-(use-package go-mode :hook ((go-mode . lsp-deferred)
-                             (go-mode . (lambda ()
-                                          (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                                          (add-hook 'before-save-hook #'lsp-organize-imports t t)))))
-(use-package nix-mode :mode "\\.nix\\'" :hook (nix-mode . lsp-deferred))
+(use-package lsp-ivy
+  :after (lsp-mode ivy)
+  :commands lsp-ivy-workspace-symbol)
 
-;;; Direnv
-(use-package direnv :config
+;; Go/Nix/rjsx with tailwind modes for LSP
+
+(use-package go-mode
+  :hook ((go-mode . lsp-deferred)
+         (go-mode . (lambda ()
+                      (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                      (add-hook 'before-save-hook #'lsp-organize-imports t t)))))
+
+(use-package nix-mode
+  :mode "\\.nix\\'"
+  :hook (nix-mode . lsp-deferred))
+
+;; Add this new section for rjsx-mode
+(use-package rjsx-mode
+  :mode ("\\.jsx?\\'" "\\.tsx?\\'")
+  :hook (rjsx-mode . lsp-deferred)
+  :config
+  (setq js2-mode-show-parse-errors nil
+        js2-mode-show-strict-warnings nil
+        js-indent-level 2
+        sgml-basic-offset 2))
+
+
+(use-package lsp-tailwindcss
+  :after lsp-mode
+  :init
+  ;; Ensures Tailwind CSS LSP runs as an addon, with other JS LSPs like tsserver
+  (setq lsp-tailwindcss-add-on-mode t)
+  ;; Make sure it activates for rjsx-mode
+  (setq lsp-tailwindcss-major-modes '(rjsx-mode web-mode html-mode css-mode js-mode typescript-mode typescript-tsx-mode)))
+
+
+
+;;; --- Direnv Integration ---
+(use-package direnv
+  :config
   (direnv-mode)
   (add-hook 'projectile-after-switch-project-hook #'direnv-update-environment))
 
-;;; Treemacs & Magit & Dashboard
-(use-package treemacs :defer t :config
-  (setq treemacs-width 30 treemacs-is-never-other-window t treemacs-project-follow-cleanup t))
+;;; --- File Explorer (Treemacs), Git, Dashboard, Modeline, etc. ---
+
+(use-package treemacs
+  :defer t
+  :config (setq treemacs-width 30 treemacs-is-never-other-window t treemacs-project-follow-cleanup t))
 (use-package treemacs-evil :after (treemacs evil))
 (use-package treemacs-projectile :after (treemacs projectile))
-(use-package magit :commands magit-status :config
+
+(use-package magit
+  :commands magit-status
+  :config
   (setq magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-(use-package dashboard :hook (server-after-make-frame . dashboard-refresh-buffer)
+
+;; Start dashboard only for standalone launches (not emacsclient)
+;; --- Dashboard --------------------------------------------------------------
+(use-package dashboard
+  :hook (server-after-make-frame . dashboard-refresh-buffer) ;; refresh on every new client frame
   :config
   (setq dashboard-startup-banner 'logo
         dashboard-center-content t
         dashboard-projects-backend 'projectile
-        dashboard-items '((recents . 5) (bookmarks . 5) (projects . 5))
+        dashboard-items '((recents   . 5)
+                          (bookmarks . 5)
+                          (projects  . 5))
+        ;; always start in *dashboard*
         initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   (dashboard-setup-startup-hook))
 
-;;; Themes & Modeline
-(use-package doom-themes :config
+
+;; Themes & Modeline
+(use-package doom-themes
+  :config
   (setq doom-themes-enable-bold t doom-themes-enable-italic t)
   (load-theme 'doom-tomorrow-night t)
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
-(use-package doom-modeline :hook (after-init . doom-modeline-mode)
-  :config (setq doom-modeline-height 35 doom-modeline-bar-width 3
-                doom-modeline-project-detection 'projectile
-                doom-modeline-buffer-file-name-style 'truncate-upto-project
-                doom-modeline-lsp t))
+
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :config (setq doom-modeline-height 35 doom-modeline-bar-width 3 doom-modeline-project-detection 'projectile doom-modeline-buffer-file-name-style 'truncate-upto-project doom-modeline-lsp t))
+
 (use-package all-the-icons :if (display-graphic-p))
 
-;;; VTerm
-(use-package vterm :commands vterm :config
-  (setq vterm-shell "/run/current-system/sw/bin/zsh")
+;;; --- vterm Integration ---
+(use-package vterm
+  :commands vterm
+  :config
+  (setq vterm-shell "/run/current-system/sw/bin/zsh") ;; or bash/fish as preferred
+  ;; General keybinds for terminal access
   (doom/leader-keys
     "oT" '(vterm :which-key "vterm new terminal")
     "ot" '(vterm-other-window :which-key "terminal in new window")))
-(defun vterm-other-window () (interactive)
-  (split-window-right) (other-window 1) (vterm))
 
-;;; Compilation Buffer Horizontal Split
-(defun my/compilation-buffer-p (buffer-name _action)
-  "Detect compilation buffers."
-  (with-current-buffer buffer-name
-    (derived-mode-p 'compilation-mode)))
-(add-to-list 'display-buffer-alist
-             '(my/compilation-buffer-p
-               (display-buffer-at-bottom)
-               (window-height . 0.25)
-               (dedicated . t)
-               (preserve-size . (nil . t))))
-(defun my/go-to-compilation ()
-  "Switch to *compilation* buffer."
+(defun vterm-other-window ()
+  "Launch a vterm in another window."
   (interactive)
-  (if-let ((buf (get-buffer "*compilation*")))
-      (switch-to-buffer-other-window buf)
-    (message "No compilation buffer")))
-(define-key doom/leader-keys "cg" #'my/go-to-compilation)
-(define-key doom/leader-keys "cc" #'compile)
-(define-key doom/leader-keys "cr" #'recompile)
+  (split-window-right)
+  (other-window 1)
+  (vterm))
 
-;;; Smartparens, Helpful, Perspective, Hydra
-(use-package smartparens :config (require 'smartparens-config) (smartparens-global-mode t))
-(use-package helpful :bind ([remap describe-function] . helpful-callable)
-                          ([remap describe-variable] . helpful-variable)
-                          ([remap describe-key] . helpful-key))
-(use-package perspective :bind (("C-x C-b" . persp-list-buffers)
-                                 ("C-x b" . persp-switch-to-buffer*)
-                                 ("C-x k" . persp-kill-buffer*))
+;;; --- Project-Aware Runner Utility ---
+
+(defun my/project--find-file (names)
+  "Return (filename . path) for the first file in NAMES found in project root."
+  (let ((root (projectile-project-root)))
+    (cl-loop for name in names
+             for f = (expand-file-name name root)
+             if (file-exists-p f)
+             return (cons name f))))
+
+(defun my/project--run-makefile-targets ()
+  "Detect Makefile in project and offer to run one of its targets."
+  (let ((makefile (cdr (my/project--find-file '("Makefile" "makefile")))))
+    (if (not makefile)
+        (user-error "No Makefile found!"))
+    (let* ((lines
+            (with-temp-buffer
+              (insert-file-contents makefile)
+              (split-string (buffer-string) "\n")))
+           (targets
+            (delq nil
+                  (mapcar (lambda (line)
+                            (if (string-match "^\\([a-zA-Z0-9._-]+\\):" line)
+                                (match-string 1 line)))
+                          lines))))
+      (let ((target (completing-read "Run make target: " targets)))
+        (compile (format "make %s" target))))))
+
+(defun my/project--run-npm-scripts ()
+  "Detect package.json in project and offer to run npm script."
+  (let ((pkg (cdr (my/project--find-file '("package.json")))))
+    (if (not pkg)
+        (user-error "No package.json found!"))
+    (let* ((json-object-type 'hash-table)
+           (scripts
+            (gethash "scripts" (json-read-file pkg))))
+      (unless scripts (user-error "No scripts in package.json!"))
+      (let ((script (completing-read "Run npm script: " (hash-table-keys scripts))))
+        (compile (format "npm run %s" script))))))
+
+(defun my/project--run-any ()
+  "Main project-runner utility."
+  (interactive)
+  (let ((file (car (my/project--find-file '("package.json" "Makefile" "makefile")))))
+    (cond
+     ((equal file "package.json")
+      (my/project--run-npm-scripts))
+     ((or (equal file "Makefile") (equal file "makefile"))
+      (my/project--run-makefile-targets))
+     (t
+      (let ((cmd (read-shell-command "No Makefile/npm scripts. Run shell command: ")))
+        (compile cmd))))))
+
+
+
+;; Always show compilation buffer at the bottom
+(setq display-buffer-alist
+      '(("\\*compilation\\*"
+         (display-buffer-reuse-window display-buffer-at-bottom)
+         (window-height . 0.3))))
+(defun doom/escape-close-windows ()
+  "Close compilation, help, or other special windows when pressing ESC."
+  (interactive)
+  (let ((buf (window-buffer (selected-window))))
+    (cond
+     ;; Close compilation buffer
+     ((string-match-p "\\*compilation\\*" (buffer-name buf))
+      (quit-window :kill))
+     ;; Close help, flycheck, messages, etc.
+     ((member (buffer-name buf) '("*Help*" "*Warnings*" "*Messages*" "*Flycheck errors*"))
+      (quit-window :kill))
+     ;; Fallback: just send ESC normally
+     (t (keyboard-quit)))))
+
+;; Bind ESC in normal & motion states (Evil)
+(with-eval-after-load 'evil
+  (define-key evil-normal-state-map [escape] 'doom/escape-close-windows)
+  (define-key evil-motion-state-map [escape] 'doom/escape-close-windows))
+
+
+
+;; Bind project runner to SPC p r and leader top level
+
+;;; --- Key Bindings (SPC leader everywhere) ---
+(doom/leader-keys
+  "SPC" '(counsel-M-x :which-key "M-x")
+  ":" '(counsel-M-x :which-key "M-x")
+  "f" '(:ignore t :which-key "file")
+  "ff" '(counsel-find-file :which-key "find file")
+  "fr" '(counsel-recentf :which-key "recent files")
+  "fs" '(save-buffer :which-key "save file")
+  "fS" '(evil-write-all :which-key "save all")
+  "fd" '(dired :which-key "dired")
+  "b" '(:ignore t :which-key "buffer")
+  "bb" '(counsel-switch-buffer :which-key "switch buffer")
+  "bd" '(kill-current-buffer :which-key "kill buffer")
+  "br" '(revert-buffer :which-key "revert buffer")
+  "bN" '(evil-buffer-new :which-key "new buffer")
+  "p" '(:ignore t :which-key "project")
+  "pp" '(counsel-projectile-switch-project :which-key "switch project")
+  "pf" '(counsel-projectile-find-file :which-key "find file in project")
+  "ps" '(counsel-projectile-ag :which-key "search in project")
+  "pb" '(counsel-projectile-switch-to-buffer :which-key "switch to project buffer")
+  "s" '(:ignore t :which-key "search")
+  "ss" '(swiper :which-key "search buffer")
+  "sp" '(counsel-projectile-ag :which-key "search project")
+  "sd" '(counsel-ag :which-key "search directory")
+  "w" '(:ignore t :which-key "window")
+  "wl" '(windmove-right :which-key "move right")
+  "wh" '(windmove-left :which-key "move left")
+  "wk" '(windmove-up :which-key "move up")
+  "wj" '(windmove-down :which-key "move down")
+  "wr" '(hydra-window-resize/body :which-key "resize")
+  "ws" '(split-window-below :which-key "split below")
+  "wv" '(split-window-right :which-key "split right")
+  "wd" '(delete-window :which-key "delete window")
+  "wD" '(delete-other-windows :which-key "delete other windows")
+  "g" '(:ignore t :which-key "git")
+  "gs" '(magit-status :which-key "status")
+  "gb" '(magit-branch :which-key "branch")
+  "gc" '(magit-commit :which-key "commit")
+  "gp" '(magit-push :which-key "push")
+  "t" '(:ignore t :which-key "toggle")
+  "tt" '(treemacs :which-key "treemacs")
+  "tn" '(display-line-numbers-mode :which-key "line numbers")
+  "tw" '(whitespace-mode :which-key "whitespace")
+  "l" '(:ignore t :which-key "lsp")
+  "lr" '(lsp-rename :which-key "rename")
+  "lf" '(lsp-format-buffer :which-key "format")
+  "la" '(lsp-execute-code-action :which-key "code action")
+  "ld" '(lsp-find-definition :which-key "find definition")
+  "lD" '(lsp-find-references :which-key "find references")
+  "le" '(flycheck-list-errors :which-key "list errors")
+  "lE" '(flycheck-next-error :which-key "next error")
+  "lP" '(flycheck-previous-error :which-key "previous error")
+  "li" '(lsp-organize-imports :which-key "organize imports")
+  "lR" '(lsp-workspace-restart :which-key "restart workspace")
+  "lS" '(lsp-workspace-shutdown :which-key "shutdown workspace")
+  "ls" '(lsp-ivy-workspace-symbol :which-key "workspace symbols")
+  "o" '(:ignore t :which-key "open")
+  "ot" '(treemacs :which-key "treemacs")
+  "od" '(dired :which-key "dired")
+  "q" '(:ignore t :which-key "quit")
+  "qq" '(evil-quit-all :which-key "quit")
+  "qr" '(restart-emacs :which-key "restart")
+  "pr"  '(my/project--run-any :which-key "run project command")
+  "r"   '(my/project--run-any :which-key "run project command"))
+(doom/leader-keys "." '(counsel-find-file :which-key "find file"))
+
+;;; --- More Doom-like Extras (smartparens, helpful, perspective, hydra) ---
+(use-package smartparens
+  :config (require 'smartparens-config) (smartparens-global-mode t))
+(use-package helpful
+  :bind
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
+(use-package perspective
+  :bind (("C-x C-b" . persp-list-buffers)
+         ("C-x b" . persp-switch-to-buffer*)
+         ("C-x k" . persp-kill-buffer*))
   :config (persp-mode))
 (use-package hydra)
 (defhydra hydra-window-resize ()
@@ -243,7 +501,25 @@
   ("j" enlarge-window "enlarge vertical")
   ("k" shrink-window "shrink vertical"))
 
-(message "Nix Doom Emacs (final) loaded!")
+;;; --- Git Gutter (diff-hl) ---
+(use-package diff-hl
+  :config
+  ;; Enable globally for all version-controlled files
+  (global-diff-hl-mode 1)
+  
+  ;; Integration with Magit (refresh indicators after git operations)
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  
+  ;; Update indicators after save
+  (add-hook 'vc-checkin-hook 'diff-hl-update)
+  
+  ;; Optional: Enable in dired to see which files have changes
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+
+
+;;; Final message
+(message "Nix Doom Emacs (refined) loaded!")
 
 ;; Local Variables:
 ;; no-byte-compile: t
