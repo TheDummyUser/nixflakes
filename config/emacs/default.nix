@@ -36,7 +36,6 @@
       ((emacsPackagesFor emacs-gtk).emacsWithPackages (
         epkgs: with epkgs; [
           # Core framework packages
-          use-package # Package configuration framework
           evil # Vim keybindings
           evil-collection # Evil bindings for various modes
           undo-tree # Better undo system
@@ -64,6 +63,8 @@
           # Language modes
           go-mode # Go language support
           nix-mode # Nix expression language support
+          rjsx-mode
+          lsp-tailwindcss
 
           # Development tools
           flycheck # Syntax checking
@@ -86,25 +87,11 @@
           helpful # Better help system
           perspective # Workspace management
           hydra # Key binding macros
+          diff-hl
 
           # Tree-sitter support (optional but recommended)
           treesit-auto
           treesit-grammars.with-all-grammars
-
-          # Additional packages for completeness
-          vertico # Alternative to ivy (can coexist)
-          orderless # Alternative matching
-          marginalia # Enhanced minibuffer annotations
-          markdown-mode # Markdown major mode
-          gruvbox-theme # Alternative theme
-          elcord # Discord rich presence
-          visual-fill-column # Soft wrapping at column
-          org-node # Zettelkasten for org
-          org-superstar # Better org bullets
-          page-break-lines # Nice page break lines
-
-          # Search tools (for counsel-ag, counsel-projectile-ag)
-          ag # The Silver Searcher
 
           # Additional LSP and development tools
           yasnippet # Snippet system
