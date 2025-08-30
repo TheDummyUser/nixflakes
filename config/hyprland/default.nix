@@ -145,6 +145,7 @@
         "$mainMod, J, togglesplit,"
         "$mainMod, PRINT, exec, hyprshot -m window"
         ", PRINT, exec, hyprshot -m output"
+        "$mainMod SHIFT, PRINT, exec, hyprshot -m region --clipboard-only"
         "$mainMod, SPACE, exec, ${config.home.homeDirectory}/nixflakes/randomImagePicker/main"
         "$mainMod, L, exec, hyprlock"
         # "$mainMod SHIFT, V,exec, pypr toggle term"
