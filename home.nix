@@ -33,14 +33,18 @@
     };
   };
 
-  qt = {
-    enable = true;
-    platformTheme.name = "kde";
-    style = {
-      name = "adwaita-dark";
-      package = pkgs.adwaita-qt;
-    };
-  };
+#   qt = {
+#   enable = true;
+#   platformTheme.name = "kde";
+#   style = {
+#     name = "adwaita-dark";
+#     package = pkgs.adwaita-qt;
+#   };
+#   packages = with pkgs; [
+#     kdePackages.plasma-integration
+#   ];
+# };
+
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -94,34 +98,21 @@
 
   # SSH configuration
   programs.ssh = {
-    enable = true;
-    addKeysToAgent = "yes";
+  enable = true;
+  enableDefaultConfig = false; # avoid using old defaults
 
-    # Optional: Add common SSH config
-    matchBlocks = {
-      "*" = {
-        identitiesOnly = true;
-        identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
-      };
+  matchBlocks = {
+    "*" = {
+      addKeysToAgent = "yes";         # moved here
+      identitiesOnly = true;
+      identityFile = "${config.home.homeDirectory}/.ssh/id_Ensure";
     };
   };
+  };
 
-  # Ensure required packages are available
   home.packages = with pkgs; [
     age
     sops
     openssh
-
-    # fish plugins start
-    fishPlugins.done
-    fishPlugins.fzf-fish
-    fishPlugins.forgit
-    fishPlugins.hydro
-    fzf
-    fishPlugins.grc
-    grc
-    fasd
-    # fish plugins end
   ];
-
 }

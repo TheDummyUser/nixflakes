@@ -122,7 +122,7 @@
     fastfetch
     eza
 
-    httpie-desktop
+    insomnia
     nixd
     nixfmt-rfc-style
     zed-editor
@@ -163,13 +163,13 @@
     pyprland
 
     firefox
+    pstree
     zip
     unzip
 
     toipe
 
     libreoffice
-    stremio
     dysk
 
     wl-clipboard
@@ -219,6 +219,7 @@
     "1.1.1.1"
     # "208.67.222.222"
   ];
+  
   # networking.firewall = {
   #     enable = true;
   #     allowedTCPPortRanges = [

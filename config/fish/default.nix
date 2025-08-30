@@ -18,6 +18,19 @@
     enableFishIntegration = true;
   };
 
+  home.packages = with pkgs; [
+# fish plugins start
+    fishPlugins.done
+    fishPlugins.fzf-fish
+    fishPlugins.forgit
+    fishPlugins.hydro
+    fzf
+    fishPlugins.grc
+    grc
+    fasd
+    # fish plugins end
+  ]
+
   programs.fish = {
     enable = true;
     interactiveShellInit = ''

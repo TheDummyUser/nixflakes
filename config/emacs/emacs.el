@@ -19,7 +19,7 @@
   (load custom-file))
 
 ;; Set font globally: JetBrainsMono Nerd Font size 14
-(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font Mono":height 100)
+(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font Mono":height 110)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -194,6 +194,9 @@
   :hook ((go-mode . lsp-deferred)
          (nix-mode . lsp-deferred)
 	 (rjsx-mode . lsp-deferred)
+	 (rust-mode . lsp-deferred)
+	 (c-mode . lsp-deferred)
+	 (c++-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred)
   :config
@@ -231,7 +234,7 @@
   :after (lsp-mode ivy)
   :commands lsp-ivy-workspace-symbol)
 
-;; Go/Nix/rjsx with tailwind modes for LSP
+;; Go/Nix/rjsx with tailwind modes for LSP and rust
 
 (use-package go-mode
   :hook ((go-mode . lsp-deferred)
@@ -264,6 +267,28 @@
 
 
 
+(use-package rust-mode
+  :mode "\\.rs\\'"
+  :hook ((rust-mode . lsp-deferred)
+         (rust-mode . (lambda ()
+                        (add-hook 'before-save-hook #'lsp-format-buffer t t))))
+  :config
+  (setq rust-format-on-save t))
+
+
+;; C/C++ mode configuration
+(use-package cc-mode
+  :hook ((c-mode . lsp-deferred)
+         (c++-mode . lsp-deferred)
+         (c-mode . (lambda ()
+                     (add-hook 'before-save-hook #'lsp-format-buffer t t)))
+         (c++-mode . (lambda ()
+                       (add-hook 'before-save-hook #'lsp-format-buffer t t))))
+  :config
+  (setq c-default-style "linux"
+        c-basic-offset 4))
+
+
 ;;; --- Direnv Integration ---
 (use-package direnv
   :config
@@ -288,7 +313,9 @@
 (use-package dashboard
   :hook (server-after-make-frame . dashboard-refresh-buffer) ;; refresh on every new client frame
   :config
-  (setq dashboard-startup-banner 'logo
+  (setq dashboard-startup-banner '"/home/gabbar/nixflakes/config/emacs/dashboard.png"
+	dashboard-image-banner-max-height 300
+	dashboard-image-banner-max-width 300
         dashboard-center-content t
         dashboard-projects-backend 'projectile
         dashboard-items '((recents   . 5)
@@ -343,7 +370,8 @@
 
 (defun my/project--run-makefile-targets ()
   "Detect Makefile in project and offer to run one of its targets."
-  (let ((makefile (cdr (my/project--find-file '("Makefile" "makefile")))))
+  (let* ((root (projectile-project-root))
+         (makefile (cdr (my/project--find-file '("Makefile" "makefile")))))
     (if (not makefile)
         (user-error "No Makefile found!"))
     (let* ((lines
@@ -356,32 +384,50 @@
                             (if (string-match "^\\([a-zA-Z0-9._-]+\\):" line)
                                 (match-string 1 line)))
                           lines))))
-      (let ((target (completing-read "Run make target: " targets)))
+      (let ((target (completing-read "Run make target: " targets))
+            (default-directory root))
         (compile (format "make %s" target))))))
 
 (defun my/project--run-npm-scripts ()
   "Detect package.json in project and offer to run npm script."
-  (let ((pkg (cdr (my/project--find-file '("package.json")))))
+  (let* ((root (projectile-project-root))
+         (pkg (cdr (my/project--find-file '("package.json")))))
     (if (not pkg)
         (user-error "No package.json found!"))
     (let* ((json-object-type 'hash-table)
            (scripts
             (gethash "scripts" (json-read-file pkg))))
       (unless scripts (user-error "No scripts in package.json!"))
-      (let ((script (completing-read "Run npm script: " (hash-table-keys scripts))))
+      (let ((script (completing-read "Run npm script: " (hash-table-keys scripts)))
+            (default-directory root))
         (compile (format "npm run %s" script))))))
+
+(defun my/project--run-cargo-commands ()
+  "Detect Cargo.toml in project and offer to run cargo commands."
+  (let* ((root (projectile-project-root))
+         (cargo-file (cdr (my/project--find-file '("Cargo.toml")))))
+    (if (not cargo-file)
+        (user-error "No Cargo.toml found!"))
+    (let ((commands '("build" "run" "test" "check" "clippy" "clean" "doc" "bench" "install")))
+      (let ((cmd (completing-read "Run cargo command: " commands))
+            (default-directory root))
+        (compile (format "cargo %s" cmd))))))
 
 (defun my/project--run-any ()
   "Main project-runner utility."
   (interactive)
-  (let ((file (car (my/project--find-file '("package.json" "Makefile" "makefile")))))
+  (let ((file (car (my/project--find-file '("Cargo.toml" "package.json" "Makefile" "makefile")))))
     (cond
+     ((equal file "Cargo.toml")
+      (my/project--run-cargo-commands))
      ((equal file "package.json")
       (my/project--run-npm-scripts))
      ((or (equal file "Makefile") (equal file "makefile"))
       (my/project--run-makefile-targets))
      (t
-      (let ((cmd (read-shell-command "No Makefile/npm scripts. Run shell command: ")))
+      (let* ((root (projectile-project-root))
+             (cmd (read-shell-command "No Cargo.toml/Makefile/npm scripts. Run shell command: "))
+             (default-directory root))
         (compile cmd))))))
 
 
@@ -516,6 +562,11 @@
   
   ;; Optional: Enable in dired to see which files have changes
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+
+(use-package elcord
+  :config
+  (elcord-mode 1))  ;; Enable elcord globally when Emacs starts
+
 
 
 ;;; Final message

@@ -65,6 +65,7 @@
           nix-mode # Nix expression language support
           rjsx-mode
           lsp-tailwindcss
+          rust-mode
 
           # Development tools
           flycheck # Syntax checking
@@ -96,6 +97,8 @@
           # Additional LSP and development tools
           yasnippet # Snippet system
           yasnippet-snippets # Snippet collections
+
+          elcord
         ]
       ));
   };
