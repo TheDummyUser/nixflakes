@@ -105,10 +105,11 @@
     "*" = {
       addKeysToAgent = "yes";         # moved here
       identitiesOnly = true;
-      identityFile = "${config.home.homeDirectory}/.ssh/id_Ensure";
+      identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
     };
   };
-  };
+};
+
 
   home.packages = with pkgs; [
     age
