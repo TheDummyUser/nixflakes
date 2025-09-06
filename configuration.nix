@@ -44,8 +44,8 @@
   #file system
   boot.supportedFilesystems = [ "ntfs" ];
   fileSystems."/mnt/Localdisk" = {
-   device = "/dev/disk/by-uuid/F21C2B081C2AC805";
-   fsType = "ntfs-3g";
+    device = "/dev/disk/by-uuid/F21C2B081C2AC805";
+    fsType = "ntfs-3g";
   };
 
   # Select internationalisation properties.
@@ -74,6 +74,8 @@
       xterm
     ];
   };
+
+  
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -155,7 +157,6 @@
     gotools
     obs-studio
     qbittorrent
-    #nodePackages_latest.js-beautify
     gotests
 
     (pkgs.callPackage ./config/pokemon { })
@@ -178,12 +179,37 @@
     libtool
     libnotify
     wineWowPackages.staging
+    ungoogled-chromium
+    gemini-cli
+    spotdl
+    ghostty
   ];
+
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "performance";
+  };
   # pam services
   programs.adb.enable = true;
   security = {
     polkit.enable = true;
     pam.services.hyprlock = { };
+  };
+
+  services.syncthing = {
+    enable = true;
+    user = "gabbar";
+    dataDir = "/home/gabbar/";
+    configDir = "/home/gabbar/.config/syncthing";
+    overrideDevices = true;
+    overrideFolders = true;
+    settings = {
+      devices = {
+        "mobile-device" = {
+          id = "PCD2B7D-Y6HYEPG-A3I7RMK-QEEY5XY-RU2Z2NO-ZDV2UQD-CILNVKQ-M4TC4A2";
+        };
+      };
+    };
   };
 
   programs.hyprland = {
@@ -219,7 +245,7 @@
     "1.1.1.1"
     # "208.67.222.222"
   ];
-  
+
   # networking.firewall = {
   #     enable = true;
   #     allowedTCPPortRanges = [

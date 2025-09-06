@@ -5,7 +5,6 @@
   ...
 }:
 {
-
   home.packages = with pkgs; [
     # Spell checking
     (aspellWithDicts (
@@ -28,6 +27,8 @@
 
   home.file.".emacs.d/init.el".source =
     config.lib.file.mkOutOfStoreSymlink /home/gabbar/nixflakes/config/emacs/emacs.el;
+
+  services.emacs.enable = true;
 
   programs.emacs = {
     enable = true;
@@ -60,6 +61,10 @@
           lsp-ivy # Ivy integration for LSP
           vterm
 
+          # Multiple cursors - Doom Emacs style
+          evil-mc # Multiple cursors for evil mode
+          evil-multiedit # Interactive editing like iedit
+
           # Language modes
           go-mode # Go language support
           nix-mode # Nix expression language support
@@ -80,7 +85,7 @@
 
           # UI and themes
           doom-themes # Doom Emacs theme collection
-          doom-modeline # Doom-style modeline
+          doom-modeline
           all-the-icons # Icon fonts
           dashboard # Startup screen
 

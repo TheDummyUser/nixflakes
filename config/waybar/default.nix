@@ -13,7 +13,6 @@
         height = 20;
         modules-left = [
           "hyprland/workspaces"
-          "hyprland/window"
         ];
         modules-center = [ "clock" ];
         modules-right = [
@@ -150,7 +149,7 @@
                  background: #${config.colorScheme.palette.base00};
                 }
 
-                #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit, #cpu {
+                #window, #clock,#workspaces,#tray,#bluetooth,#network,#pulseaudio, #idle_inhibitor, #custom-exit, #cpu,#mpd {
                 background-color: #${config.colorScheme.palette.base01};
                 color: #${config.colorScheme.palette.base06};
                 border-radius: 5px;
