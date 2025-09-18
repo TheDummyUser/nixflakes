@@ -1,6 +1,8 @@
 { ... }:
 {
   imports = [
+    # ./i3
+    ./bspwm
     ./zsh
     ./git
     ./hyprland
@@ -14,9 +16,6 @@
     ./fastfetch
     # ./zellij
     ./kitty
-    # ./bspwm
-    # ./qtile
-    # ./fish
     ./emacs
   ];
 }

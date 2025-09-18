@@ -73,9 +73,8 @@
     excludePackages = with pkgs; [
       xterm
     ];
+    windowManager.bspwm.enable = true;
   };
-
-  
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
@@ -113,6 +112,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    man-pages
+    man-pages-posix
     wget
     curl
     vesktop
@@ -160,6 +161,8 @@
     gotests
 
     (pkgs.callPackage ./config/pokemon { })
+    # (pkgs.callPackage ./config/baca { })
+    # (pkgs.callPackage ./config/climage { })
     tmux
     pyprland
 
@@ -182,7 +185,8 @@
     ungoogled-chromium
     gemini-cli
     spotdl
-    ghostty
+    epr
+    flameshot
   ];
 
   powerManagement = {
@@ -194,6 +198,8 @@
   security = {
     polkit.enable = true;
     pam.services.hyprlock = { };
+    pam.services.i3lock = { };
+    pam.services.betterlockscreen = { };
   };
 
   services.syncthing = {
@@ -227,6 +233,7 @@
     pkgs.nerd-fonts.jetbrains-mono
     pkgs.vistafonts
     pkgs.corefonts
+    pkgs.font-awesome
   ];
 
   networking.firewall = {
