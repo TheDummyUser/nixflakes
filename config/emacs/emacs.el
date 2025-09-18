@@ -206,7 +206,13 @@
   :config
   (global-flycheck-mode)
   (setq flycheck-display-errors-delay 0.1
-        flycheck-emacs-lisp-load-path 'inherit))
+        flycheck-clang-definitions t
+        flycheck-emacs-lisp-load-path 'inherit)
+  ;; Add C++ specific flags for unused warnings
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq flycheck-clang-args '("-Wall" "-Wextra" "-Wunused-variable" "-Wunused-parameter")))))
+
 
 (use-package lsp-mode
   :init
@@ -225,6 +231,7 @@
         lsp-file-watch-threshold 2000
         lsp-eldoc-render-all t
         lsp-idle-delay 0.6
+	lsp-prefer-flymake nil
         lsp-completion-provider :capf
         lsp-headerline-breadcrumb-enable nil
         lsp-restart 'auto-restart
@@ -243,8 +250,8 @@
   (setq lsp-ui-peek-always-show t
         lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-diagnostics t
-        lsp-ui-sideline-ignore-duplicate t
-        lsp-ui-doc-enable nil
+        lsp-ui-sideline-ignore-duplicate nil
+        lsp-ui-doc-enable t
         lsp-ui-doc-position 'bottom
         lsp-ui-doc-delay 2
         lsp-ui-peek-fontify 'on-demand
@@ -253,6 +260,17 @@
 (use-package lsp-ivy
   :after (lsp-mode ivy)
   :commands lsp-ivy-workspace-symbol)
+
+(custom-set-faces
+ ;; Errors: straight red line
+ '(flycheck-error   ((t (:underline (:style line :color "Red1")))))
+ ;; Warnings: straight orange line
+ '(flycheck-warning ((t (:underline (:style line :color "DarkOrange")))))
+ ;; Infos: straight green line
+ '(flycheck-info    ((t (:underline (:style line :color "LightBlue"))))))
+
+
+
 
 ;;; --- Programming Languages ---
 (use-package go-mode
@@ -276,9 +294,12 @@
 
 (use-package lsp-tailwindcss
   :after lsp-mode
-  :init
+  :config
+  (setq lsp-tailwindcss-server-command '("tailwindcss-language-server" "--stdio"))
   (setq lsp-tailwindcss-add-on-mode t)
-  (setq lsp-tailwindcss-major-modes '(rjsx-mode web-mode html-mode css-mode js-mode typescript-mode typescript-tsx-mode)))
+  (setq lsp-tailwindcss-major-modes
+        '(typescript-tsx-mode rjsx-mode js-mode typescript-mode web-mode html-mode css-mode)))
+
 
 (use-package rust-mode
   :mode "\\.rs\\'"
@@ -804,15 +825,17 @@
 (use-package diff-hl
   :config
   (global-diff-hl-mode 1)
+  (diff-hl-flydiff-mode 1) ;; Enable live diff updates
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   (add-hook 'vc-checkin-hook 'diff-hl-update)
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
+
 ;;; --- Discord Rich Presence ---
-(use-package elcord
-  :config
-  (elcord-mode 1))
+;; (use-package elcord
+;;   :config
+;;   (elcord-mode 1))
 
 ;;; --- Final message ---
 (message "Complete Doom Emacs configuration loaded!")

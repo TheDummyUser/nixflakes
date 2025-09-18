@@ -23,12 +23,34 @@
     # Additional tools that LSP might need
     gotools # Go development tools
     delve # Go debugger
+    rustywind
+    tailwindcss-language-server
   ];
 
   home.file.".emacs.d/init.el".source =
     config.lib.file.mkOutOfStoreSymlink /home/gabbar/nixflakes/config/emacs/emacs.el;
 
-  services.emacs.enable = true;
+  services.emacs = {
+    enable = true;
+    defaultEditor = true;
+    extraOptions = [
+      "--fg-daemon=server"
+      "--no-x"
+    ];
+  };
+
+  xdg.desktopEntries.emacsclient = {
+    name = "Emacs (client)";
+    comment = "Edit text with emacs client";
+    exec = "emacsclient -c -a \"\" %F";
+    icon = "emacs";
+    type = "Application";
+    categories = [
+      "Utility"
+      "TextEditor"
+    ];
+    terminal = false;
+  };
 
   programs.emacs = {
     enable = true;
@@ -102,8 +124,7 @@
           # Additional LSP and development tools
           yasnippet # Snippet system
           yasnippet-snippets # Snippet collections
-
-          elcord
+          ox-epub
         ]
       ));
   };

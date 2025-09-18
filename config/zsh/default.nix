@@ -20,6 +20,14 @@
     enableZshIntegration = true;
   };
 
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    options = [
+      "--no-cmd"
+    ];
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
