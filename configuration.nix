@@ -236,22 +236,25 @@
     pkgs.font-awesome
   ];
 
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+  hardware.graphics.enable = true;
+
   networking.firewall = {
     enable = false;
     allowedTCPPorts = [
+      8081
       8080
       5037
       8022
     ];
     allowedUDPPorts = [ ];
   };
-
-  networking.networkmanager.insertNameservers = [
-    "8.8.8.8"
-    "1.0.0.1"
-    "1.1.1.1"
-    # "208.67.222.222"
-  ];
 
   # networking.firewall = {
   #     enable = true;

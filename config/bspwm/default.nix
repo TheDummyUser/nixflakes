@@ -61,7 +61,7 @@
         bspc config history_aware_focus true
 
         # Window appearance
-        bspc config border_width 0
+        bspc config border_width 1
         bspc config window_gap 5
         bspc config normal_border_color "#${config.colorScheme.palette.base03}"
         bspc config focused_border_color "#${config.colorScheme.palette.base09}"
@@ -269,7 +269,7 @@
         #################################
         #           Corners             #
         #################################
-        corner-radius = 6;
+        corner-radius = 0;
 
         #################################
         #       General Settings        #
@@ -302,7 +302,7 @@
             blur-background = false;
             fade = false;
           },
-          
+
           # Normal windows
           {
             match = "window_type = 'normal'";
@@ -638,7 +638,7 @@
 
         label-volume = %percentage%%
 
-        label-muted = 
+        label-muted =
         label-muted-foreground = ''${colors.disabled}
 
         [module/memory]
@@ -665,14 +665,14 @@
         label-connected = %essid%
 
         format-disconnected = <label-disconnected>
-        label-disconnected = 
+        label-disconnected =
         label-disconnected-foreground = ''${colors.disabled}
 
-        ramp-signal-0 = 
-        ramp-signal-1 = 
-        ramp-signal-2 = 
-        ramp-signal-3 = 
-        ramp-signal-4 = 
+        ramp-signal-0 =
+        ramp-signal-1 =
+        ramp-signal-2 =
+        ramp-signal-3 =
+        ramp-signal-4 =
         ramp-signal-foreground = ''${colors.primary}
 
         [module/tray]
