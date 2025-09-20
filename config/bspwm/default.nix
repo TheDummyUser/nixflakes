@@ -564,7 +564,7 @@
         background = #${base00}
         foreground = #${base07}
         primary = #${base09}
-        secondary = #${base0A}
+        secondary = #${base01}
         alert = #${base08}
         disabled = #${base03}
 
@@ -585,9 +585,13 @@
         separator = |
         separator-foreground = ''${colors.disabled}
 
-        font-0 = "JetBrainsMono Nerd Font:size=9;2"
-        font-1 = "Font Awesome 6 Free:style=Solid:size=9;2"
-        font-2 = "Font Awesome 6 Brands:size=9;2"
+        font-0 = "Iosevka Nerd Font:style=Medium:size=10;3"
+        font-1 = "Iosevka Nerd Font:style=Bold:size=10;3"
+        font-2 = "Iosevka Nerd Font:size=13;4"
+        font-3 = "Material Design Icons:size=12;4"
+        font-4 = "Font Awesome 6 Free:style=Solid:size=10;3"
+        font-5 = "Font Awesome 6 Brands:size=10;3"
+        font-6 = "Iosevka Nerd Font:size=16;5"
 
         modules-left = bspwm
         modules-center = date
@@ -608,8 +612,8 @@
 
         label-occupied = %index%
         label-occupied-padding = 2
-        label-occupied-background = ''${colors.secondary}
-        label-occupied-foreground = ''${colors.background}
+        label-occupied-background = ''${colors.background}
+        label-occupied-foreground = ''${colors.foreground}
 
         label-urgent = %index%!
         label-urgent-background = ''${colors.alert}

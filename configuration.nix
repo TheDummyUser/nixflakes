@@ -234,6 +234,8 @@
     pkgs.vistafonts
     pkgs.corefonts
     pkgs.font-awesome
+    pkgs.nerd-fonts.iosevka
+    pkgs.material-design-icons
   ];
 
   programs.steam = {
