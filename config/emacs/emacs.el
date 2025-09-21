@@ -14,7 +14,7 @@
   (load custom-file))
 
 ;; Set font globally: JetBrainsMono Nerd Font size 14
-(set-face-attribute 'default nil :family "JetBrainsMono Nerd Font Mono" :height 110)
+(set-face-attribute 'default nil :family "Iosevka Nerd Font" :height 120)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -434,29 +434,43 @@
 
 (use-package all-the-icons :if (display-graphic-p))
 
-;;; --- VTerm Configuration ---
+;;; --- VTerm + Multi-VTerm Configuration ---
 (use-package vterm
   :commands vterm
   :config
+  ;; Use your NixOS zsh
   (setq vterm-shell "/run/current-system/sw/bin/zsh"))
 
-;; Doom-style vterm functions
+(use-package multi-vterm
+  :after vterm
+  :bind
+  (("C-c t" . multi-vterm)          ;; new terminal
+   ("C-c n" . multi-vterm-next)     ;; next terminal
+   ("C-c p" . multi-vterm-prev)     ;; previous terminal
+   ("C-c d" . multi-vterm-dedicated-toggle))) ;; dedicated bottom panel
+
+;; Doom-style helpers
 (defun +vterm/toggle ()
-  "Toggle vterm in a popup window (Doom style)."
+  "Toggle the first vterm buffer in a popup (like Doom)."
   (interactive)
   (if (get-buffer "*vterm*")
       (if (get-buffer-window "*vterm*")
           (delete-window (get-buffer-window "*vterm*"))
         (pop-to-buffer "*vterm*"))
-    (vterm)))
+    (multi-vterm)))
 
 (defun +vterm/here ()
-  "Open vterm in the current directory."
+  "Open vterm in the current directory (project root if available)."
   (interactive)
   (let ((default-directory (if (project-current)
                                (project-root (project-current))
                              default-directory)))
-    (vterm)))
+    (multi-vterm)))
+
+(defun +vterm/project ()
+  "Open a vterm at the project root (using multi-vterm-project)."
+  (interactive)
+  (multi-vterm-project))
 
 ;;; --- Project Runner Utilities ---
 (defun my/project--find-file (names)

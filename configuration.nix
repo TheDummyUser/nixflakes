@@ -187,6 +187,7 @@
     spotdl
     epr
     flameshot
+    vscode
   ];
 
   powerManagement = {
@@ -195,6 +196,7 @@
   };
   # pam services
   programs.adb.enable = true;
+  
   security = {
     polkit.enable = true;
     pam.services.hyprlock = { };
@@ -240,7 +242,6 @@
 
   programs.steam = {
     enable = true;
-    gamescopeSession.enable = true;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
@@ -257,16 +258,6 @@
     ];
     allowedUDPPorts = [ ];
   };
-
-  # networking.firewall = {
-  #     enable = true;
-  #     allowedTCPPortRanges = [
-  #       { from = 1714; to = 1764; } # KDE Connect
-  #     ];
-  #     allowedUDPPortRanges = [
-  #       { from = 1714; to = 1764; } # KDE Connect
-  #     ];
-  #   };
 
   system.stateVersion = "25.05";
 

@@ -125,6 +125,7 @@
           yasnippet # Snippet system
           yasnippet-snippets # Snippet collections
           ox-epub
+          multi-vterm
         ]
       ));
   };

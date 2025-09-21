@@ -85,7 +85,7 @@
             kitty
 
         super + e
-            thunar
+            nautilus
 
         super + r
             rofi -show drun
@@ -220,15 +220,31 @@
         super + alt + ctrl + j
             bspc node -v 0 20
 
-        # --- Volume (check with `xev` if keys differ) ---
+        # --- PipeWire Volume Control ---
         XF86AudioRaiseVolume
-            pamixer -i 5
+            ~/.config/polybar/scripts/volume.sh up
 
         XF86AudioLowerVolume
-            pamixer -d 5
+            ~/.config/polybar/scripts/volume.sh down
 
         XF86AudioMute
-            pamixer -t
+            ~/.config/polybar/scripts/volume.sh mute
+
+        # --- MPD Controls ---
+        XF86AudioPlay
+            mpc toggle
+
+        XF86AudioPause
+            mpc pause
+
+        XF86AudioStop
+            mpc stop
+
+        XF86AudioNext
+            mpc next
+
+        XF86AudioPrev
+            mpc prev
 
         # --- Screenshot ---
         Print
@@ -570,7 +586,7 @@
 
         [bar/main]
         width = 100%
-        height = 20pt
+        height = 24pt
         radius = 0
 
         background = ''${colors.background}
@@ -593,9 +609,9 @@
         font-5 = "Font Awesome 6 Brands:size=10;3"
         font-6 = "Iosevka Nerd Font:size=16;5"
 
-        modules-left = bspwm
-        modules-center = date
-        modules-right = pulseaudio memory cpu wlan tray
+        modules-left = bspwm mpd-controls
+        modules-center = date mpd-info
+        modules-right = pipewire-volume memory cpu wlan tray
 
         cursor-click = pointer
         cursor-scroll = ns-resize
@@ -633,50 +649,93 @@
         label =  %date%  %time%
         label-foreground = ''${colors.foreground}
 
-        [module/pulseaudio]
-        type = internal/pulseaudio
+        [module/pipewire-volume]
+        type = custom/script
+        interval = 1
+        label = "%output%"
+        exec = ~/.config/polybar/scripts/volume.sh get
+        click-right = pavucontrol &
+        click-left = ~/.config/polybar/scripts/volume.sh mute
+        scroll-up = ~/.config/polybar/scripts/volume.sh up
+        scroll-down = ~/.config/polybar/scripts/volume.sh down
+        format-prefix = " 󰕾 "
+        format-prefix-foreground = ''${colors.primary}
 
-        format-volume-prefix = "  "
-        format-volume-prefix-foreground = ''${colors.primary}
-        format-volume = <label-volume>
+        [module/mpd-info]
+        type = internal/mpd
+        host = 127.0.0.1
+        port = 6600
+        interval = 2
 
-        label-volume = %percentage%%
+        format-online = <label-song>
+        format-playing = ''${self.format-online}
+        format-paused = ''${self.format-online}
+        format-stopped = "  "
 
-        label-muted =
-        label-muted-foreground = ''${colors.disabled}
+        label-song =  %artist% - %title%
+        label-song-maxlen = 50
+        label-song-ellipsis = true
+        label-offline =  MPD is offline
+
+        [module/mpd-controls]
+        type = internal/mpd
+        host = 127.0.0.1
+        port = 6600
+        interval = 1
+
+        format-online = <icon-prev><toggle><icon-next><icon-repeat><icon-random>
+        format-offline = "  "
+
+        icon-play = "  "
+        icon-pause = "  "
+        icon-stop = "  "
+        icon-prev = " 󰙣 "
+        icon-next = " 󰙡 "
+        icon-repeat = "  "
+        icon-repeatone = " 󰑘 "
+        icon-single = "  "
+        icon-random = "  "
+        icon-consume = "  "
+
+        toggle-on-foreground = ''${colors.primary}
+        toggle-off-foreground = ''${colors.disabled}
+        icon-prev-foreground = ''${colors.disabled}
+        icon-next-foreground = ''${colors.disabled}
+        icon-repeat-foreground = ''${colors.secondary}
+        icon-random-foreground = ''${colors.secondary}
 
         [module/memory]
         type = internal/memory
         interval = 2
-        format-prefix = " 󱁉 "
+        format-prefix = "  "
         format-prefix-foreground = ''${colors.primary}
         label = %percentage_used:2%%
 
         [module/cpu]
         type = internal/cpu
         interval = 2
-        format-prefix = " 󰻠 "
+        format-prefix = "󰻠  "
         format-prefix-foreground = ''${colors.primary}
         label = %percentage:2%%
 
         [module/wlan]
         type = internal/network
         interface-type = wireless
-        format-prefix = " 󰖩 "
+        format-prefix = " 󰤨 "
         interval = 3.0
 
         format-connected = <ramp-signal> <label-connected>
         label-connected = %essid%
 
         format-disconnected = <label-disconnected>
-        label-disconnected =
+        label-disconnected = " 󰤭 "
         label-disconnected-foreground = ''${colors.disabled}
 
-        ramp-signal-0 =
-        ramp-signal-1 =
-        ramp-signal-2 =
-        ramp-signal-3 =
-        ramp-signal-4 =
+        ramp-signal-0 = " 󰤯 "
+        ramp-signal-1 = " 󰤟 "
+        ramp-signal-2 = " 󰤢 "
+        ramp-signal-3 = " 󰤥 "
+        ramp-signal-4 = " 󰤨 "
         ramp-signal-foreground = ''${colors.primary}
 
         [module/tray]
@@ -690,6 +749,39 @@
         screenchange-reload = true
         pseudo-transparency = true
       '';
+    };
+    "polybar/scripts/volume.sh" = {
+      text = ''
+        #!/usr/bin/env bash
+
+        get_volume() {
+            wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print int($2*100)}'
+        }
+
+        is_muted() {
+            wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -q "MUTED"
+        }
+
+        case $1 in
+            "up")
+                wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+                ;;
+            "down")
+                wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+                ;;
+            "mute")
+                wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+                ;;
+            "get"|*)
+                if is_muted; then
+                    echo "MUTED"
+                else
+                    echo "$(get_volume)%"
+                fi
+                ;;
+        esac
+      '';
+      executable = true;
     };
 
     "polybar/launch.sh" = {
@@ -741,7 +833,14 @@
     xclip
     pamixer
     rofi
-    polybar
+
+    # PipeWire and audio control
+    pipewire
+    wireplumber
+    pavucontrol
+
+    # Polybar with MPD support - override to enable MPD support
+    (polybar.override { mpdSupport = true; })
 
     # Additional useful packages for bspwm
     sxhkd
@@ -752,7 +851,13 @@
     playerctl
     dunst
     picom
-    betterlockscreen # 🔒 Added lockscreen
+    betterlockscreen
     i3lock-color
+    psmisc
+
+    # MPD and clients
+    mpd
+    mpc-cli
+    ncmpcpp
   ];
 }
