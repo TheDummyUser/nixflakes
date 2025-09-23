@@ -15,8 +15,8 @@
   gtk = {
     enable = true;
     font = {
-      name = "JetBrainsMono Nerd Font";
-      size = 10;
+      name = "Iosevka Nerd Font";
+      size = 11;
     };
     theme = {
       name = "adw-gtk3-dark";

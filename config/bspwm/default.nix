@@ -50,7 +50,7 @@
         # BSPWM configuration
         bspc config automatic_scheme alternate
         bspc config initial_polarity second_child
-        bspc config split_ratio 0.52
+        bspc config split_ratio 0.50
         bspc config borderless_monocle true
         bspc config gapless_monocle true
         bspc config single_monocle false
@@ -707,14 +707,14 @@
         [module/memory]
         type = internal/memory
         interval = 2
-        format-prefix = "  "
+        format-prefix = " "
         format-prefix-foreground = ''${colors.primary}
         label = %percentage_used:2%%
 
         [module/cpu]
         type = internal/cpu
         interval = 2
-        format-prefix = "󰻠  "
+        format-prefix = "󰻠 "
         format-prefix-foreground = ''${colors.primary}
         label = %percentage:2%%
 

@@ -8,11 +8,11 @@
     enable = true;
     settings = with config.colorScheme.palette; {
       # font
-      font_family = "JetBrainsMono Nerd Font";
+      font_family = "Iosevka Nerd Font";
       bold_font = "auto";
       italic_font = "auto";
       bold_italic_font = "auto";
-      font_size = 11;
+      font_size = 13;
 
       #pages
       "ctrl+shift+up" = "scroll_line_up";
