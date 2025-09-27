@@ -181,6 +181,7 @@
     fd
     libtool
     libnotify
+    bottles
     wineWowPackages.staging
     ungoogled-chromium
     gemini-cli

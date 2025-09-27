@@ -1,7 +1,6 @@
 { ... }:
 {
   imports = [
-    # ./i3
     ./bspwm
     ./zsh
     ./git
@@ -14,7 +13,6 @@
     ./hyprlock
     ./wlogout
     ./fastfetch
-    # ./zellij
     ./kitty
     ./emacs
   ];

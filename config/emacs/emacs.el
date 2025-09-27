@@ -3,6 +3,7 @@
 ;; Complete Doom Emacs-style configuration for Nix-managed setup
 ;; All packages installed via Nix, no auto-downloads at runtime.
 ;; This configuration closely matches Doom Emacs keybindings and behavior
+;; Enhanced with improved LSP intellisense and Git line-level operations
 
 ;;; --- Core Settings ---
 (setq inhibit-startup-message t
@@ -150,7 +151,7 @@
          ("C-x b" . counsel-ibuffer)
          ("C-x C-f" . counsel-find-file)
          :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history))
+         ("C-r" . counsel-minibuffer-history))
   :config
   (setq ivy-initial-inputs-alist nil))
 
@@ -213,7 +214,6 @@
             (lambda ()
               (setq flycheck-clang-args '("-Wall" "-Wextra" "-Wunused-variable" "-Wunused-parameter")))))
 
-
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
@@ -231,7 +231,6 @@
         lsp-file-watch-threshold 2000
         lsp-eldoc-render-all t
         lsp-idle-delay 0.6
-	lsp-prefer-flymake nil
         lsp-completion-provider :capf
         lsp-headerline-breadcrumb-enable nil
         lsp-restart 'auto-restart
@@ -261,6 +260,73 @@
   :after (lsp-mode ivy)
   :commands lsp-ivy-workspace-symbol)
 
+;;; --- Enhanced LSP Intellisense Functions ---
+(defun +lsp/trigger-completion ()
+  "Manually trigger LSP completion at point (like Ctrl+Space in VSCode)."
+  (interactive)
+  (if (bound-and-true-p lsp-mode)
+      (progn
+        (company-abort)
+        (company-manual-begin))
+    (company-complete)))
+
+(defun +lsp/show-hover-doc ()
+  "Show hover documentation at point (like hovering in VSCode)."
+  (interactive)
+  (if (bound-and-true-p lsp-mode)
+      (lsp-ui-doc-show)
+    (eldoc-print-current-symbol-info)))
+
+(defun +lsp/hide-hover-doc ()
+  "Hide hover documentation."
+  (interactive)
+  (when (bound-and-true-p lsp-ui-mode)
+    (lsp-ui-doc-hide)))
+
+(defun +lsp/signature-help ()
+  "Show signature help (parameter hints)."
+  (interactive)
+  (when (bound-and-true-p lsp-mode)
+    (lsp-signature-activate)))
+
+(defun +lsp/toggle-inlay-hints ()
+  "Toggle inlay hints if supported by the language server."
+  (interactive)
+  (if (bound-and-true-p lsp-mode)
+      (if (and (lsp-feature? "textDocument/inlayHint")
+               (fboundp 'lsp-inlay-hints-mode))
+          (lsp-inlay-hints-mode 'toggle)
+        (message "Inlay hints not supported by current language server"))
+    (message "LSP not active")))
+
+;; Auto-show hover documentation on cursor pause
+(defvar +lsp--hover-timer nil
+  "Timer for auto-showing hover documentation.")
+
+(defun +lsp/auto-hover-setup ()
+  "Setup auto-hover functionality."
+  (when +lsp--hover-timer
+    (cancel-timer +lsp--hover-timer))
+  (setq +lsp--hover-timer
+        (run-with-idle-timer 1.0 t #'+lsp/show-hover-doc-if-available)))
+
+(defun +lsp/show-hover-doc-if-available ()
+  "Show hover doc if LSP is available and cursor hasn't moved."
+  (when (and (bound-and-true-p lsp-mode)
+             (not (minibufferp))
+             (not (region-active-p)))
+    (+lsp/show-hover-doc)))
+
+(defun +lsp/cancel-auto-hover ()
+  "Cancel auto-hover timer."
+  (when +lsp--hover-timer
+    (cancel-timer +lsp--hover-timer)
+    (setq +lsp--hover-timer nil)))
+
+;; Setup auto-hover in LSP buffers
+(add-hook 'lsp-mode-hook #'+lsp/auto-hover-setup)
+(add-hook 'kill-buffer-hook #'+lsp/cancel-auto-hover)
+
 (custom-set-faces
  ;; Errors: straight red line
  '(flycheck-error   ((t (:underline (:style line :color "Red1")))))
@@ -269,8 +335,240 @@
  ;; Infos: straight green line
  '(flycheck-info    ((t (:underline (:style line :color "LightBlue"))))))
 
+;;; --- Enhanced Git Operations for Line/Region Management ---
 
+(defun +git/get-current-file-relative-path ()
+  "Get the current file path relative to git repository root."
+  (when buffer-file-name
+    (let* ((git-root (magit-toplevel))
+           (relative-path (if git-root
+                              (file-relative-name buffer-file-name git-root)
+                            buffer-file-name)))
+      relative-path)))
 
+(defun +git/get-line-numbers ()
+  "Get line numbers for current region or current line."
+  (let ((bounds (+git/get-region-or-line-bounds)))
+    (cons (line-number-at-pos (car bounds))
+          (line-number-at-pos (cdr bounds)))))
+
+(defun +git/get-region-or-line-bounds ()
+  "Get the bounds of current region or current line."
+  (if (use-region-p)
+      (cons (region-beginning) (region-end))
+    (cons (line-beginning-position) (line-end-position))))
+
+(defun +git/get-region-info ()
+  "Get information about the current region or current line."
+  (if (use-region-p)
+      (list (line-number-at-pos (region-beginning))
+            (line-number-at-pos (region-end))
+            (buffer-substring-no-properties (region-beginning) (region-end)))
+    (list (line-number-at-pos)
+          (line-number-at-pos)
+          (thing-at-point 'line t))))
+
+(defun +git/show-region-diff ()
+  "Show git diff for the current region or line."
+  (interactive)
+  (let* ((file-path (+git/get-current-file-relative-path))
+         (line-nums (+git/get-line-numbers))
+         (start-line (car line-nums))
+         (end-line (cdr line-nums)))
+    (if file-path
+        (let* ((git-root (magit-toplevel))
+               (default-directory git-root))
+          ;; Use magit's diff functionality with line restriction
+          (magit-diff-range "HEAD" nil (list file-path))
+          (message "Showing diff for %s (lines %d-%d)" file-path start-line end-line))
+      (message "Current buffer is not a file or not in a git repository"))))
+
+(defun +git/stash-region ()
+  "Create a patch from the current region and offer to stash it."
+  (interactive)
+  (let* ((file-path (+git/get-current-file-relative-path))
+         (bounds (+git/get-region-or-line-bounds))
+         (line-nums (+git/get-line-numbers))
+         (start-line (car line-nums))
+         (end-line (cdr line-nums)))
+    (if file-path
+        (let* ((git-root (magit-toplevel))
+               (default-directory git-root)
+               (stash-message (read-string
+                              (format "Note about lines %d-%d from %s: "
+                                      start-line end-line file-path))))
+          (if (y-or-n-p "This will stash the entire file. Continue? ")
+              (progn
+                (save-buffer)
+                (magit-stash-both stash-message)
+                (message "Changes stashed with message: %s" stash-message))
+            (message "Stash cancelled")))
+      (message "Current buffer is not a file or not in a git repository"))))
+
+(defun +git/revert-region ()
+  "Revert changes in the current region or current line."
+  (interactive)
+  (let* ((file-path (+git/get-current-file-relative-path))
+         (bounds (+git/get-region-or-line-bounds))
+         (line-nums (+git/get-line-numbers))
+         (start-line (car line-nums))
+         (end-line (cdr line-nums)))
+    (if file-path
+        (if (y-or-n-p (format "Revert lines %d-%d in %s? This cannot be undone! "
+                              start-line end-line file-path))
+            (let* ((git-root (magit-toplevel))
+                   (default-directory git-root)
+                   (temp-file (make-temp-file "git-revert-"))
+                   ;; Get the original content from HEAD
+                   (full-original (with-temp-buffer
+                                    (insert-file-contents
+                                     (expand-file-name file-path git-root))
+                                    (buffer-string)))
+                   (head-content (with-temp-buffer
+                                   (call-process "git" nil t nil
+                                                 "show" (format "HEAD:%s" file-path))
+                                   (buffer-string))))
+              (if (not (string-empty-p head-content))
+                  (progn
+                    ;; Save current buffer content
+                    (save-buffer)
+                    ;; Create a temporary buffer with HEAD content
+                    (with-temp-buffer
+                      (insert head-content)
+                      (goto-char (point-min))
+                      (forward-line (1- start-line))
+                      (let ((start-pos (point)))
+                        (forward-line (1+ (- end-line start-line)))
+                        (let ((replacement-text (buffer-substring start-pos (point))))
+                          ;; Now apply the replacement in the actual buffer
+                          (with-current-buffer (find-file-noselect
+                                                (expand-file-name file-path git-root))
+                            (goto-char (point-min))
+                            (forward-line (1- start-line))
+                            (let ((replace-start (point)))
+                              (forward-line (1+ (- end-line start-line)))
+                              (delete-region replace-start (point))
+                              (goto-char replace-start)
+                              (insert replacement-text))
+                            (save-buffer)))))
+                    (message "Lines %d-%d reverted successfully" start-line end-line))
+                (message "Could not retrieve original content from git")))
+          (message "Revert cancelled"))
+      (message "Current buffer is not a file or not in a git repository"))))
+
+(defun +git/stage-region ()
+  "Stage the current file (Git doesn't support staging specific lines directly).
+For line-level staging, use Magit's interactive staging."
+  (interactive)
+  (let* ((file-path (+git/get-current-file-relative-path)))
+    (if file-path
+        (if (y-or-n-p "Git doesn't support staging specific lines. Stage the entire file? ")
+            (let* ((git-root (magit-toplevel))
+                   (default-directory git-root))
+              (magit-stage-file file-path)
+              (message "File %s staged" file-path))
+          (message "Use 'SPC g g' for Magit and press TAB on a file to stage specific hunks interactively"))
+      (message "Current buffer is not a file or not in a git repository"))))
+
+(defun +git/unstage-region ()
+  "Unstage the current region or current line."
+  (interactive)
+  (let* ((file-path (+git/get-current-file-relative-path))
+         (region-info (+git/get-region-info))
+         (start-line (nth 0 region-info))
+         (end-line (nth 1 region-info)))
+    (if file-path
+        (let* ((git-root (magit-toplevel))
+               (default-directory git-root))
+          (shell-command (format "cd %s && git reset HEAD %s"
+                                 (shell-quote-argument git-root)
+                                 (shell-quote-argument file-path)))
+          (message "File unstaged")
+          (magit-status))
+      (message "Current buffer is not a file or not in a git repository"))))
+
+(defun +git/blame-region ()
+  "Show git blame for the current region or current line."
+  (interactive)
+  (let* ((line-nums (+git/get-line-numbers))
+         (start-line (car line-nums))
+         (end-line (cdr line-nums)))
+    (if buffer-file-name
+        (progn
+          (require 'magit-blame)
+          (magit-blame-addition)
+          (message "Showing blame for lines %d-%d" start-line end-line))
+      (message "Current buffer is not a file"))))
+
+(defun +git/show-region-log ()
+  "Show git log for the current file."
+  (interactive)
+  (if buffer-file-name
+      (progn
+        (magit-log-buffer-file)
+        (message "Showing log for current file"))
+    (message "Current buffer is not a file")))
+
+(defun +git/magit-stage-region ()
+  "Open Magit and navigate to current file for interactive staging."
+  (interactive)
+  (let ((current-file buffer-file-name))
+    (when current-file
+      (magit-status)
+      (magit-diff-visit-file current-file))))
+
+(defun +git/diff-hl-revert-hunk-at-point ()
+  "Revert the diff hunk at point using diff-hl."
+  (interactive)
+  (if (bound-and-true-p diff-hl-mode)
+      (diff-hl-revert-hunk)
+    (message "diff-hl-mode is not active")))
+
+(defun +git/diff-hl-stage-hunk ()
+  "Stage the diff hunk at point."
+  (interactive)
+  (if (bound-and-true-p diff-hl-mode)
+      (let ((file-path buffer-file-name))
+        (when file-path
+          (save-buffer)
+          (magit-stage-file file-path)
+          (message "File staged")))
+    (message "diff-hl-mode is not active")))
+
+(defun +git/copy-region-diff ()
+  "Copy the diff of current region to kill ring."
+  (interactive)
+  (let* ((file-path (+git/get-current-file-relative-path))
+         (line-nums (+git/get-line-numbers))
+         (start-line (car line-nums))
+         (end-line (cdr line-nums)))
+    (if file-path
+        (let* ((git-root (magit-toplevel))
+               (default-directory git-root)
+               (diff-output (shell-command-to-string
+                            (format "git diff HEAD -- %s"
+                                    (shell-quote-argument file-path)))))
+          (if (not (string-empty-p diff-output))
+              (progn
+                (kill-new diff-output)
+                (message "Diff copied to kill ring"))
+            (message "No changes found")))
+      (message "Current buffer is not a file or not in a git repository"))))
+
+(defun +git/toggle-diff-hl-mode ()
+  "Toggle diff-hl mode (git gutter)."
+  (interactive)
+  (diff-hl-mode 'toggle))
+
+(defun +git/next-hunk ()
+  "Jump to next git hunk."
+  (interactive)
+  (diff-hl-next-hunk))
+
+(defun +git/previous-hunk ()
+  "Jump to previous git hunk."
+  (interactive)
+  (diff-hl-previous-hunk))
 
 ;;; --- Programming Languages ---
 (use-package go-mode
@@ -299,7 +597,6 @@
   (setq lsp-tailwindcss-add-on-mode t)
   (setq lsp-tailwindcss-major-modes
         '(typescript-tsx-mode rjsx-mode js-mode typescript-mode web-mode html-mode css-mode)))
-
 
 (use-package rust-mode
   :mode "\\.rs\\'"
@@ -603,6 +900,32 @@
  :states '(normal visual motion emacs)
  "<escape>" 'doom/escape)
 
+;; Enhanced LSP keybindings (like VSCode/modern editors)
+(general-define-key
+ :states '(normal insert)
+ "C-;" '+lsp/trigger-completion   ;; Ctrl+; to trigger completion
+ "C-k" '+lsp/signature-help)
+
+(general-define-key
+ :states '(normal insert)
+ "C-." 'lsp-execute-code-action)
+
+(general-define-key
+ :states '(normal)
+ "K" '+lsp/show-hover-doc               ;; K to show hover (Doom/Vim style)
+ "g K" '+lsp/hide-hover-doc)            ;; g K to hide hover
+
+;; Git region operations keybindings
+(general-define-key
+ :states '(visual normal)
+ :prefix "SPC g"
+ "d" '+git/show-region-diff
+ "s" '+git/stage-region
+ "u" '+git/unstage-region
+ "S" '+git/stash-region
+ "r" '+git/revert-region
+ "b" '+git/blame-region
+ "l" '+git/show-region-log)
 
 ;; Main leader key bindings (Complete Doom Emacs style)
 (doom/leader-keys
@@ -692,7 +1015,7 @@
   "w <" '(evil-window-decrease-width :which-key "decrease width")
   "w >" '(evil-window-increase-width :which-key "increase width")
 
-  ;; Git operations (Magit)
+  ;; Enhanced Git operations (Magit + custom functions)
   "g" '(:ignore t :which-key "git")
   "g g" '(magit-status :which-key "status")
   "g G" '(magit-status-here :which-key "status here")
@@ -709,13 +1032,32 @@
   "g F" '(magit-fetch-all :which-key "fetch all")
   "g l" '(magit-log :which-key "log")
   "g L" '(magit-log-buffer-file :which-key "log buffer file")
-  "g d" '(magit-diff :which-key "diff")
+  "g d" '(+git/show-region-diff :which-key "diff region/line")
   "g D" '(magit-diff-buffer-file :which-key "diff buffer file")
   "g t" '(git-timemachine :which-key "time machine")
   "g r" '(magit-rebase :which-key "rebase")
-  "g R" '(magit-reset :which-key "reset")
+  "g R" '(+git/revert-region :which-key "revert region/line")
   "g z" '(magit-stash :which-key "stash")
   "g Z" '(magit-stash-pop :which-key "stash pop")
+  "g S" '(+git/stash-region :which-key "stash region/line")
+
+  ;; Git region operations submenu
+  "g v" '(:ignore t :which-key "region/hunk operations")
+  "g v d" '(+git/show-region-diff :which-key "show diff")
+  "g v s" '(+git/magit-stage-region :which-key "stage interactively")
+  "g v r" '(+git/revert-region :which-key "revert region")
+  "g v b" '(+git/blame-region :which-key "blame")
+  "g v l" '(+git/show-region-log :which-key "log")
+  "g v c" '(+git/copy-region-diff :which-key "copy diff")
+
+  ;; Hunk operations using diff-hl
+   "g h" '(:ignore t :which-key "hunks")
+   "g h r" '(+git/diff-hl-revert-hunk-at-point :which-key "revert hunk")
+   "g h s" '(+git/diff-hl-stage-hunk :which-key "stage hunk")
+   "g h n" '(+git/next-hunk :which-key "next hunk")
+   "g h p" '(+git/previous-hunk :which-key "previous hunk")
+   "g h g" '(diff-hl-diff-goto-hunk :which-key "goto hunk")
+   "g h m" '(diff-hl-mark-hunk :which-key "mark hunk")
 
   ;; Toggle operations
   "t" '(:ignore t :which-key "toggle")
@@ -729,8 +1071,9 @@
   "t l" '(visual-line-mode :which-key "visual line")
   "t s" '(flycheck-mode :which-key "syntax checking")
   "t S" '(flyspell-mode :which-key "spell checking")
+  "t h" '(+lsp/toggle-inlay-hints :which-key "inlay hints")
 
-  ;; LSP operations
+  ;; Enhanced LSP operations
   "l" '(:ignore t :which-key "lsp")
   "l r" '(lsp-rename :which-key "rename")
   "l f" '(lsp-format-buffer :which-key "format buffer")
@@ -744,7 +1087,10 @@
   "l R" '(lsp-find-references :which-key "find references")
   "l s" '(lsp-document-symbols :which-key "document symbols")
   "l S" '(lsp-workspace-symbol :which-key "workspace symbol")
-  "l h" '(lsp-describe-thing-at-point :which-key "describe at point")
+  "l h" '(+lsp/show-hover-doc :which-key "show hover")
+  "l H" '(+lsp/hide-hover-doc :which-key "hide hover")
+  "l k" '(+lsp/signature-help :which-key "signature help")
+  "l c" '(+lsp/trigger-completion :which-key "trigger completion")
   "l e" '(flycheck-list-errors :which-key "list errors")
   "l n" '(flycheck-next-error :which-key "next error")
   "l p" '(flycheck-previous-error :which-key "previous error")
@@ -796,6 +1142,9 @@
   "c d" '(lsp-find-definition :which-key "definition")
   "c D" '(lsp-find-references :which-key "references")
   "c i" '(lsp-organize-imports :which-key "organize imports")
+  "c h" '(+lsp/show-hover-doc :which-key "hover documentation")
+  "c k" '(+lsp/signature-help :which-key "signature help")
+  "c SPC" '(+lsp/trigger-completion :which-key "trigger completion")
 
   ;; Notes/Org operations (placeholder)
   "n" '(:ignore t :which-key "notes")
@@ -845,14 +1194,21 @@
   (add-hook 'vc-checkin-hook 'diff-hl-update)
   (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
+(with-eval-after-load 'diff-hl
+  ;; Ensure diff-hl updates on save
+  (add-hook 'after-save-hook 'diff-hl-update nil t)
 
-;;; --- Discord Rich Presence ---
-;; (use-package elcord
-;;   :config
-;;   (elcord-mode 1))
+  ;; Configure diff-hl to work better with our custom functions
+  (setq diff-hl-draw-borders nil
+        diff-hl-flydiff-delay 0.5)
+
+  ;; Add keybindings for diff-hl operations
+  (define-key diff-hl-mode-map (kbd "C-c g r") '+git/diff-hl-revert-hunk-at-point)
+  (define-key diff-hl-mode-map (kbd "C-c g n") 'diff-hl-next-hunk)
+  (define-key diff-hl-mode-map (kbd "C-c g p") 'diff-hl-previous-hunk))
 
 ;;; --- Final message ---
-(message "Complete Doom Emacs configuration loaded!")
+(message "Complete Doom Emacs configuration with enhanced LSP and Git features loaded!")
 
 ;; Local Variables:
 ;; no-byte-compile: t
