@@ -5,11 +5,11 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./config/nix
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./config/nix
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -28,14 +28,17 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
   # Set your time zone.
   time.timeZone = "Asia/Kolkata";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_IN";
-  
+
   boot.supportedFilesystems = [ "ntfs" ];
   fileSystems."/mnt/Localdisk" = {
     device = "/dev/disk/by-uuid/F21C2B081C2AC805";
@@ -53,34 +56,30 @@
     LC_TELEPHONE = "en_IN";
     LC_TIME = "en_IN";
   };
-  
+
   services.displayManager.sddm.enable = true;
   services.xserver = {
-	enable = true;
-        excludePackages = with pkgs; [
-	    xterm
-       ];
+    enable = true;
+    excludePackages = with pkgs; [
+      xterm
+    ];
   };
-
 
   services.emacs = {
     enable = true;
     defaultEditor = true;
     package = pkgs.emacs-pgtk;
   };
-  
+
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
   };
   programs.dconf.enable = true;
   xdg.portal = {
-         enable = true;
-         extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
-
-  
-
 
   environment.sessionVariables.NIXOS_OZONE_WL = 1;
   services.gnome.gnome-keyring.enable = true;
@@ -97,31 +96,33 @@
   services.blueman.enable = true;
   services.gvfs.enable = true;
 
-
   users.defaultUserShell = pkgs.zsh;
-
+  programs.nix-ld.enable = true;
   environment.shells = with pkgs; [
     # fish
     zsh
   ];
-  programs.zsh.enable = true;  
+  programs.zsh.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.gabbar = {
     isNormalUser = true;
     shell = pkgs.zsh;
     description = "gabbar";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "adbusers"
+      "kvm"
+    ];
     packages = with pkgs; [
       vesktop
       kitty
-      rofi	
-      firefox
+      rofi
       waybar
 
-      
       zed-editor
-      
+
       maven
       gradle
       jdt-language-server
@@ -138,6 +139,18 @@
       dysk
 
       btop
+
+      devenv
+      direnv
+
+      brave
+      nodejs
+
+      nil
+      nixd
+
+      zip
+      unzip
     ];
   };
 
@@ -147,8 +160,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
   ];
 
   powerManagement = {
@@ -170,10 +183,9 @@
   # };
 
   programs.java = {
-     enable = true;
-     package = pkgs.openjdk21;
+    enable = true;
+    package = pkgs.openjdk21;
   };
-
 
   fonts.packages = [
     pkgs.nerd-fonts.fira-code
@@ -184,7 +196,14 @@
     pkgs.nerd-fonts.iosevka
     pkgs.material-design-icons
   ];
-  
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+  hardware.graphics.enable = true;
 
   # List services that you want to enable:
 
@@ -194,6 +213,7 @@
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 8081 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 

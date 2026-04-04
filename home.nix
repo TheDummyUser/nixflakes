@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-  	  ./config
+    ./config
     inputs.nix-colors.homeManagerModules.default
   ];
 
@@ -57,33 +57,35 @@
     x11.enable = true;
   };
 
-
   # Enable SSH agent and add keys automatically
   services.ssh-agent.enable = true;
 
   # SSH configuration
   programs.ssh = {
-  enable = true;
-  enableDefaultConfig = false; # avoid using old defaults
+    enable = true;
+    enableDefaultConfig = false; # avoid using old defaults
 
-  matchBlocks = {
-    "*" = {
-      addKeysToAgent = "yes";         # moved here
-      identitiesOnly = true;
-      identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+    matchBlocks = {
+      "*" = {
+        addKeysToAgent = "yes"; # moved here
+        identitiesOnly = true;
+        identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+      };
     };
   };
-  };
 
+  # dir env
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableZshIntegration = true;
+  };
 
   home.packages = with pkgs; [
     (pkgs.writeShellScriptBin "jrun" (builtins.readFile ./customScripts/java-run.sh))
-    
     openssh
     mpc
     rmpc
   ];
 
-
- 
 }

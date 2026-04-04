@@ -17,16 +17,15 @@
 
       # Autostart
       exec-once = [
-      "nm-applet --indicator &"
-      "swww-daemon"
-      "waybar & dunst"
-      "vesktop"
-      "blueman-applet &"
-      "wl-paste -t text --watch clipman store --no-persist"
-      "wl-paste -p -t text --watch clipman store -P --histpath=${config.home.homeDirectory}/.local/share/clipman-primary.json"
-      "sleep 1 && ${config.home.homeDirectory}/flakes/config/hyprland/wall.sh"
+        "nm-applet --indicator &"
+        "awww-daemon"
+        "waybar & dunst"
+        "vesktop"
+        "blueman-applet &"
+        "wl-paste -t text --watch clipman store --no-persist"
+        "wl-paste -p -t text --watch clipman store -P --histpath=${config.home.homeDirectory}/.local/share/clipman-primary.json"
+        "sleep 1 && ${config.home.homeDirectory}/flakes/config/hyprland/wall.sh"
       ];
-
 
       # Environment Variables
       env = [
@@ -62,7 +61,7 @@
           vibrancy = 0.1696;
         };
       };
-      
+
       animations = {
         enabled = true;
         bezier = [
@@ -132,15 +131,15 @@
         "$mainMod, E, exec, $fileManager"
         "$mainMod, V, togglefloating,"
         "$mainMod, K, exec, clipman pick -t rofi"
-  "$mainMod CONTROL, V, exec, clipman clear"
-"$mainMod ALT, V, exec, clipman clear --all"
+        "$mainMod CONTROL, V, exec, clipman clear"
+        "$mainMod ALT, V, exec, clipman clear --all"
         "$mainMod, R, exec, $menu"
         "$mainMod, P, pseudo,"
         "$mainMod, J, togglesplit,"
         "$mainMod, PRINT, exec, hyprshot -m window"
         ", PRINT, exec, hyprshot -m output"
         "$mainMod SHIFT, PRINT, exec, hyprshot -m region --clipboard-only"
-         "$mainMod, SPACE, exec, ${config.home.homeDirectory}/flakes/config/hyprland/wall.sh"
+        "$mainMod, SPACE, exec, ${config.home.homeDirectory}/flakes/config/hyprland/wall.sh"
         "$mainMod, L, exec, hyprlock"
         # "$mainMod SHIFT, V,exec, pypr toggle term"
         "$mainMod, left, movefocus, l"
@@ -197,10 +196,10 @@
       ];
 
       # Window Rules
-      windowrulev2 = [
-        "suppressevent maximize, class:.*"
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-      ];
+      # windowrulev2 = [
+      #   "suppressevent maximize, class:.*"
+      #   "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+      # ];
     };
   };
 }

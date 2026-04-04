@@ -22,8 +22,8 @@ if [ -z "$WALLPAPER" ]; then
     exit 1
 fi
 
-# Set wallpaper with swww
-swww img "$WALLPAPER" \
+# Set wallpaper with awww
+awww img "$WALLPAPER" \
     --transition-type any \
     --transition-step 200
 
