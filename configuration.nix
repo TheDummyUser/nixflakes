@@ -127,7 +127,7 @@
       gradle
       jdt-language-server
 
-      swww
+      awww
       networkmanagerapplet
       dunst
       nautilus
@@ -151,6 +151,8 @@
 
       zip
       unzip
+
+      git-filter-repo
     ];
   };
 
