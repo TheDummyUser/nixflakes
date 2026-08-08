@@ -15,60 +15,68 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
+
   outputs =
     inputs@{
       self,
-        nixpkgs,
+      nixpkgs,
       ...
     }:
+    let
+      user = "gabbar";
+      system = "x86_64-linux";
+    in
     {
-      nixosConfigurations =
-        let
-          user = "gabbar";
-        in
-        {
-          moipc = nixpkgs.lib.nixosSystem rec {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit (nixpkgs) lib;
-              inherit
-                inputs
-                nixpkgs
-                system
-                user
-                ;
-            };
-            modules = [
-              inputs.sops-nix.nixosModules.sops
-              inputs.home-manager.nixosModules.home-manager
-
-              {
-                home-manager = {
-                  backupFileExtension = "hmbackup";
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = { inherit inputs system user; };
-                  users.${user} = {
-                    imports = [
-                      inputs.spicetify-nix.homeManagerModules.default
-                      inputs.nix-colors.homeManagerModule
-                      inputs.sops-nix.homeManagerModules.sops
-
-                      ./home.nix
-                    ];
-                    home = {
-                      username = user;
-                      homeDirectory = "/home/${user}";
-                      stateVersion = "25.11";
-                    };
-                    programs.home-manager.enable = true;
-                  };
-                };
-              }
-              ./configuration.nix
-            ];
+      nixosConfigurations = {
+        moipc = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit (nixpkgs) lib;
+            inherit
+              inputs
+              nixpkgs
+              system
+              user
+              ;
           };
+          modules = [
+            # 🔥 The new modern way to declare system architecture
+            { nixpkgs.hostPlatform = system; }
+
+            inputs.sops-nix.nixosModules.sops
+            inputs.hermes-agent.nixosModules.default
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                backupFileExtension = "hmbackup";
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = { inherit inputs system user; };
+                users.${user} = {
+                  imports = [
+                    inputs.spicetify-nix.homeManagerModules.default
+                    inputs.nix-colors.homeManagerModule
+                    inputs.sops-nix.homeManagerModules.sops
+
+                    ./home.nix
+                  ];
+                  home = {
+                    username = user;
+                    homeDirectory = "/home/${user}";
+                    stateVersion = "25.11";
+                  };
+                  programs.home-manager.enable = true;
+                };
+              };
+            }
+            ./configuration.nix
+          ];
         };
+      };
     };
 }

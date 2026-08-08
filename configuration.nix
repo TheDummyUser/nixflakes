@@ -2,7 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -64,7 +69,10 @@
       xterm
     ];
   };
-
+  # services.desktopManager.cosmic.enable = true;
+  # environment.cosmic.excludePackages = with pkgs; [
+  #   cosmic-edit
+  # ];
   services.emacs = {
     enable = true;
     defaultEditor = true;
@@ -81,7 +89,10 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
-  environment.sessionVariables.NIXOS_OZONE_WL = 1;
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = 1;
+    # ANDROID_SDK_ROOT = "${pkgs.androidsdk}/libexec/android-sdk";
+  };
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.greetd.enableGnomeKeyring = true;
 
@@ -114,6 +125,7 @@
       "wheel"
       "adbusers"
       "kvm"
+      "libvirtd"
     ];
     packages = with pkgs; [
       vesktop
@@ -152,12 +164,36 @@
       zip
       unzip
 
-      git-filter-repo
+      # git-filter-repo
+      # google-chrome
+
+      qbittorrent
+
+      dnsmasq
+      virglrenderer
+
+      ani-cli
+
+      pkgs.jellyfin
+      pkgs.jellyfin-web
+      pkgs.jellyfin-ffmpeg
+      lavat
+      inputs.antigravity-nix.packages.${system}.google-antigravity-cli
+
+      obsidian
+      scrcpy
+      localsend
+      jetbrains.idea
+      obs-studio
+      kdePackages.kdenlive
     ];
   };
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    # android_sdk.accept_license = true;
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -165,6 +201,25 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
   ];
+
+  virtualisation.libvirtd = {
+    enable = true;
+
+    qemu = {
+      package = pkgs.qemu_kvm;
+      runAsRoot = true;
+
+      # 🔥 THIS helps with graphics acceleration
+      swtpm.enable = true;
+    };
+  };
+  programs.virt-manager.enable = true;
+  services.qemuGuest.enable = true;
+  services.spice-vdagentd.enable = true;
+
+  hardware.graphics = {
+    enable = true;
+  };
 
   powerManagement = {
     enable = true;
@@ -174,6 +229,10 @@
   security = {
     polkit.enable = true;
     pam.services.hyprlock = { };
+  };
+
+  services.flatpak = {
+    enable = true;
   };
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -186,7 +245,7 @@
 
   programs.java = {
     enable = true;
-    package = pkgs.openjdk21;
+    package = pkgs.openjdk25;
   };
 
   fonts.packages = [
@@ -205,7 +264,13 @@
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
   };
-  hardware.graphics.enable = true;
+  # hardware.graphics.enable = true;
+
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
+  };
+
 
   # List services that you want to enable:
 
@@ -213,9 +278,8 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  networking.firewall.allowedTCPPorts = [ 8081 ];
+  networking.firewall.allowedTCPPorts = [ 8081 8096 8920 ];
+  networking.firewall.allowedUDPPorts = [ 1900 7359 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
@@ -227,4 +291,31 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
+
+  # ── Hermes Agent ──────────────────────────────────────────────────────
+  # Docs: https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup
+  services.hermes-agent = {
+    enable = true;
+
+    settings = {
+      # OpenRouter (default provider) — DeepSeek V4 Flash 0731
+      model.default = "deepseek/deepseek-v4-flash-0731";
+      toolsets = [ "all" ];
+    };
+
+    # Simplest secrets setup: a plain root-owned, non-world-readable env file.
+    # Create it once with:
+    #   echo "OPENROUTER_API_KEY=sk-or-your-key" | sudo install -m 0600 -o hermes /dev/stdin /var/lib/hermes/env
+    #
+    # If/when you wire up sops-nix (you already import its module in flake.nix),
+    # swap this line for:
+    #   environmentFiles = [ config.sops.secrets."hermes-env".path ];
+    # and add a `sops.secrets."hermes-env" = { format = "yaml"; };` block plus
+    # a secrets/hermes.yaml file containing `hermes-env: | OPENROUTER_API_KEY=sk-or-...`
+    environmentFiles = [ "/var/lib/hermes/env" ];
+
+    # Puts `hermes` on your PATH and shares state between the CLI and the
+    # gateway service (so `hermes chat` uses the same sessions/memory).
+    addToSystemPackages = true;
+  };
 }

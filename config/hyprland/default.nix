@@ -4,6 +4,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
+    configType = "hyprlang";
     package = pkgs.hyprland;
     # systemdIntegration = true;
     settings = {
@@ -87,7 +88,7 @@
       };
 
       dwindle = {
-        pseudotile = true;
+        # pseudotile = true;
         preserve_split = true;
       };
 
@@ -135,7 +136,7 @@
         "$mainMod ALT, V, exec, clipman clear --all"
         "$mainMod, R, exec, $menu"
         "$mainMod, P, pseudo,"
-        "$mainMod, J, togglesplit,"
+        # "$mainMod, J, togglesplit,"
         "$mainMod, PRINT, exec, hyprshot -m window"
         ", PRINT, exec, hyprshot -m output"
         "$mainMod SHIFT, PRINT, exec, hyprshot -m region --clipboard-only"

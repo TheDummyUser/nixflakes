@@ -2,18 +2,19 @@
 {
   imports = [
     # ./bspwm
-     ./zsh
-     ./git
-     ./hyprland
-     ./waybar
-     ./spicetify
+    ./zsh
+    ./git
+    ./hyprland
+    ./waybar
+    ./spicetify
     # ./rofi
     # ./zathura
-     ./dunst
-     ./hyprlock
+    ./dunst
+    ./hyprlock
     # ./wlogout
-     ./fastfetch
+    ./fastfetch
     ./kitty
     # ./emacs
+    # ./cyber
   ];
 }

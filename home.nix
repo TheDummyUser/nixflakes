@@ -41,8 +41,18 @@
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
-  };
 
+    # Silences the warning and prevents Home Manager from incorrectly
+    # forcing the GTK3 theme onto GTK4/libadwaita apps.
+    gtk4 = {
+      theme = null;
+
+      # Optional: You can also pass the dark theme preference to GTK4 here
+      extraConfig = {
+        gtk-application-prefer-dark-theme = 1;
+      };
+    };
+  };
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
@@ -65,7 +75,7 @@
     enable = true;
     enableDefaultConfig = false; # avoid using old defaults
 
-    matchBlocks = {
+    settings = {
       "*" = {
         addKeysToAgent = "yes"; # moved here
         identitiesOnly = true;
